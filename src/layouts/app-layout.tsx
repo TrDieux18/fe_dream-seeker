@@ -3,7 +3,6 @@ import ChatList from "@/components/chat/chat-list";
 import useChatId from "@/hooks/use-chat-id";
 import { cn } from "@/lib/utils";
 import { Outlet, useLocation } from "react-router-dom";
-import { PROTECTED_ROUTES } from "@/routes/routes";
 
 const AppLayout = () => {
   const chatId = useChatId();

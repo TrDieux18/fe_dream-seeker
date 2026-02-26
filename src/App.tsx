@@ -13,7 +13,7 @@ function App() {
 
   const { user, isAuthStatus, isAuthStatusLoading } = useAuth();
 
-  const { onlineUsers } = useSocket();
+  useSocket();
 
   const isAuth = isAuthRoute(pathname);
 

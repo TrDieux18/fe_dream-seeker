@@ -40,6 +40,7 @@ export const useAuth = create<AuthState>()(
                set({ isSigningUp: false });
             }
          },
+
          login: async (data: LoginType) => {
             set({ isLoggingIn: true });
             try {
@@ -56,6 +57,7 @@ export const useAuth = create<AuthState>()(
                set({ isLoggingIn: false });
             }
          },
+         
          logout: async () => {
             try {
                await API.post("/auth/logout");

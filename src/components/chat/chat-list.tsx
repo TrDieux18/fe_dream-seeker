@@ -1,5 +1,5 @@
 import { useChat } from "@/hooks/use-chat";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef} from "react";
 import { Spinner } from "../ui/spinner";
 import ChatListItem from "./chat-list-item";
 import { useNavigate } from "react-router-dom";
@@ -162,7 +162,7 @@ export const ChatList = () => {
       "
     >
       {/* Header - Fixed height */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <ChatListHeader onSearch={setSearchQuery} />
       </div>
 

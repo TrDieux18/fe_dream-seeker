@@ -5,15 +5,15 @@ import { ArrowLeft, Phone, Video, Info, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import React, { useState } from "react";
 import GroupSettingsDialog from "./group-settings-dialog";
 import DirectChatSettingsDialog from "./direct-chat-settings-dialog";
 
-interface Props {
+interface ChatHeaderProps {
   chat: ChatType;
   currentUserId: string | null;
 }
-const ChatHeader = ({ chat, currentUserId }: Props) => {
+const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
   const navigate = useNavigate();
   const [showGroupSettings, setShowGroupSettings] = useState(false);
   const [showDirectChatSettings, setShowDirectChatSettings] = useState(false);

@@ -9,11 +9,12 @@ import { generateUUID } from "@/lib/helper";
 interface ChatState {
    chats: ChatType[];
    users: UserType[];
+
    singleChat: {
       chat: ChatType
       messages: MessageType[];
    } | null;
-   readMessages: Record<string, string>; // chatId -> lastReadMessageId
+   readMessages: Record<string, string>; 
 
    isChatsLoading: boolean;
    isUsersLoading: boolean;
@@ -65,6 +66,7 @@ export const useChat = create<ChatState>()((set, get) => ({
    isSendingMsg: false,
    isLoadingMore: false,
    hasMoreChats: true,
+   
    fetchAllUsers: async () => {
       set({ isUsersLoading: true });
       try {
@@ -82,7 +84,7 @@ export const useChat = create<ChatState>()((set, get) => ({
       set({ isChatsLoading: true });
       try {
          const response = await API.get("/chat/all", {
-            params: { limit: 5, offset: 0 }
+            params: { limit: 8, offset: 0 }
          });
          set({
             chats: response.data.chats,
@@ -253,6 +255,7 @@ export const useChat = create<ChatState>()((set, get) => ({
          }
       })
    },
+
    addNewMessage: (chatId: string, message: MessageType) => {
       set((state) => {
          if (!state.singleChat) {
@@ -377,6 +380,7 @@ export const useChat = create<ChatState>()((set, get) => ({
          toast.error(error?.response?.data?.message || "Failed to clear chat messages");
       }
    },
+   
    editMessage: async (messageId: string, content: string) => {
       try {
          const { data } = await API.put("/chat/message/edit", { messageId, content });

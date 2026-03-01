@@ -8,7 +8,7 @@ const AppLayout = () => {
   const chatId = useChatId();
   const location = useLocation();
 
-  // Check if we're on a chat route
+  
   const isChatRoute = location.pathname.startsWith("/chat");
 
   return (

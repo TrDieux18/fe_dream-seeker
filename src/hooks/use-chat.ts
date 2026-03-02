@@ -86,6 +86,7 @@ export const useChat = create<ChatState>()((set, get) => ({
          const response = await API.get("/chat/all", {
             params: { limit: 8, offset: 0 }
          });
+         
          set({
             chats: response.data.chats,
             hasMoreChats: response.data.hasMore

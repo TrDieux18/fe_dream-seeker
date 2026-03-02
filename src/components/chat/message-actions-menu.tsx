@@ -8,6 +8,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { MoreHorizontal, Reply, Trash2, Pencil } from "lucide-react";
+import type React from "react";
 
 interface MessageActionsMenuProps {
   message: MessageType;
@@ -16,12 +17,12 @@ interface MessageActionsMenuProps {
   currentUserId: string | null;
 }
 
-const MessageActionsMenu = ({
+const MessageActionsMenu: React.FC<MessageActionsMenuProps> = ({
   message,
   onReply,
   onEdit,
   currentUserId,
-}: MessageActionsMenuProps) => {
+}) => {
   const { deleteMessage } = useChat();
 
   const handleDelete = async () => {

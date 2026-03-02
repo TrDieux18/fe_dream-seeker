@@ -1,0 +1,1 @@
+export type ModalType = "ModalDriectChatSettings" | "ModalGroupSettings" | "ModalEditProfile" ;

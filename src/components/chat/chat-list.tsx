@@ -1,5 +1,5 @@
 import { useChat } from "@/hooks/use-chat";
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import { Spinner } from "../ui/spinner";
 import ChatListItem from "./chat-list-item";
 import { useNavigate } from "react-router-dom";

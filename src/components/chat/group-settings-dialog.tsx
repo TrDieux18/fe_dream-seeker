@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useChat } from "@/hooks/use-chat";
 import type { ChatType } from "@/types/chat.type";
 import { Button } from "../ui/button";
@@ -32,11 +32,11 @@ interface GroupSettingsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const GroupSettingsDialog = ({
+const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
   chat,
   open,
   onOpenChange,
-}: GroupSettingsDialogProps) => {
+}) => {
   const {
     updateGroupImage,
     updateGroupName,
@@ -56,11 +56,6 @@ const GroupSettingsDialog = ({
   // Sync local state with chat prop changes
   useEffect(() => {
     setGroupName(chat.groupName || "");
-    console.log("GroupSettingsDialog - chat updated:", {
-      chatId: chat._id,
-      groupName: chat.groupName,
-      groupImage: chat.groupImage,
-    });
   }, [chat.groupName, chat.groupImage, chat._id]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

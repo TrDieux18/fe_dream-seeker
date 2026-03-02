@@ -1,13 +1,18 @@
 import type { MessageType } from "@/types/chat.type";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import type React from "react";
 
-interface Props {
+interface ChatReplyBarProps {
   replyTo: MessageType | null;
   currentUserId: string | null;
   onCancel: () => void;
 }
-const ChatReplyBar = ({ replyTo, currentUserId, onCancel }: Props) => {
+const ChatReplyBar: React.FC<ChatReplyBarProps> = ({
+  replyTo,
+  currentUserId,
+  onCancel,
+}) => {
   if (!replyTo) return null;
 
   const senderName =

@@ -26,7 +26,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
   return (
     <>
       <div
-        className="sticky top-0
+        className="chat-header sticky top-0
       flex items-center justify-between border-b border-border/30
        px-4 z-50 bg-background/95 backdrop-blur-sm
       "

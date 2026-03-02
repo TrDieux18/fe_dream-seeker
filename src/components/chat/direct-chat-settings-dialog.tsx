@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useChat } from "@/hooks/use-chat";
 import { useNavigate } from "react-router-dom";
 import { PROTECTED_ROUTES } from "@/routes/routes";
@@ -33,12 +33,12 @@ interface DirectChatSettingsDialogProps {
   currentUserId: string | null;
 }
 
-const DirectChatSettingsDialog = ({
+const DirectChatSettingsDialog: React.FC<DirectChatSettingsDialogProps> = ({
   chat,
   open,
   onOpenChange,
   currentUserId,
-}: DirectChatSettingsDialogProps) => {
+}) => {
   const navigate = useNavigate();
   const { clearChatMessages, deleteChat } = useChat();
   const [showClearConfirm, setShowClearConfirm] = useState(false);

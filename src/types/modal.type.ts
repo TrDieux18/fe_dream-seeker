@@ -1,1 +1,6 @@
-export type ModalType = "ModalDriectChatSettings" | "ModalGroupSettings" | "ModalEditProfile" ;
+export type ModalType =
+   "ModalDirectChatSettings"
+   | "ModalGroupSettings"
+   | "ModalEditProfile"
+   | "ModalClearMessagesConfirm"
+   | "ModalDeleteChatConfirm";

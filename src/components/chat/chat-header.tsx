@@ -5,9 +5,9 @@ import { ArrowLeft, Phone, Video, Info, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Button } from "../ui/button";
-import React, { useState } from "react";
-import GroupSettingsDialog from "./group-settings-dialog";
-import DirectChatSettingsDialog from "./direct-chat-settings-dialog";
+import React from "react";
+
+import { useModal } from "@/hooks/use-modal";
 
 interface ChatHeaderProps {
   chat: ChatType;
@@ -15,8 +15,8 @@ interface ChatHeaderProps {
 }
 const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
   const navigate = useNavigate();
-  const [showGroupSettings, setShowGroupSettings] = useState(false);
-  const [showDirectChatSettings, setShowDirectChatSettings] = useState(false);
+
+  const { openModal } = useModal();
 
   const { name, subheading, avatar, isOnline, isGroup } = getOtherUserAndGroup(
     chat,
@@ -76,7 +76,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
               variant="ghost"
               size="icon"
               className="rounded-full h-9 w-9 hover:bg-muted/60"
-              onClick={() => setShowGroupSettings(true)}
+              onClick={() => openModal("ModalGroupSettings", { chat })}
             >
               <Settings className="h-5 w-5" strokeWidth={1.5} />
             </Button>
@@ -85,27 +85,15 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
               variant="ghost"
               size="icon"
               className="rounded-full h-9 w-9 hover:bg-muted/60"
-              onClick={() => setShowDirectChatSettings(true)}
+              onClick={() =>
+                openModal("ModalDirectChatSettings", { chat, currentUserId })
+              }
             >
               <Info className="h-5 w-5" strokeWidth={1.5} />
             </Button>
           )}
         </div>
       </div>
-      {isGroup ? (
-        <GroupSettingsDialog
-          chat={chat}
-          open={showGroupSettings}
-          onOpenChange={setShowGroupSettings}
-        />
-      ) : (
-        <DirectChatSettingsDialog
-          chat={chat}
-          open={showDirectChatSettings}
-          onOpenChange={setShowDirectChatSettings}
-          currentUserId={currentUserId}
-        />
-      )}
     </>
   );
 };

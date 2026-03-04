@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
 import { useChat } from "@/hooks/use-chat";
+import { useModal } from "@/hooks/use-modal";
 import type { ChatType } from "@/types/chat.type";
-import { Button } from "../ui/button";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -10,53 +11,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import DangerZone from "../ui/danger-zone";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Camera, Trash2, Edit2, X } from "lucide-react";
-import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import AvatarWithBadge from "../avatar-with-badge";
 
-interface GroupSettingsDialogProps {
-  chat: ChatType;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
-  chat,
-  open,
-  onOpenChange,
-}) => {
+const ModalGroupSettings = () => {
   const {
     updateGroupImage,
     updateGroupName,
     deleteGroupImage,
     deleteGroupName,
-    deleteChat,
-    clearChatMessages,
   } = useChat();
+
+  const { closeModal, isModalOpen, getModalData } = useModal();
+  const { chat } = getModalData("ModalGroupSettings") as { chat: ChatType };
 
   const [groupName, setGroupName] = useState(chat.groupName || "");
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync local state with chat prop changes
-  useEffect(() => {
-    setGroupName(chat.groupName || "");
-  }, [chat.groupName, chat.groupImage, chat._id]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,12 +42,9 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
     const reader = new FileReader();
     reader.onloadend = async () => {
       try {
-        setIsLoading(true);
         await updateGroupImage(chat._id, reader.result as string);
       } catch (error) {
         console.error("Failed to upload image:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     reader.readAsDataURL(file);
@@ -78,12 +52,9 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
 
   const handleDeleteImage = async () => {
     try {
-      setIsLoading(true);
       await deleteGroupImage(chat._id);
     } catch (error) {
       console.error("Failed to delete image:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -93,57 +64,30 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
       return;
     }
     try {
-      setIsLoading(true);
       await updateGroupName(chat._id, groupName.trim());
       setIsEditingName(false);
     } catch (error) {
       console.error("Failed to update name:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleDeleteName = async () => {
     try {
-      setIsLoading(true);
       await deleteGroupName(chat._id);
       setGroupName("");
       setIsEditingName(false);
     } catch (error) {
       console.error("Failed to delete name:", error);
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleClearMessages = async () => {
-    try {
-      setIsLoading(true);
-      await clearChatMessages(chat._id);
-      toast.success("All messages cleared");
-      setShowClearConfirm(false);
-    } catch (error) {
-      console.error("Failed to clear messages:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDeleteChat = async () => {
-    try {
-      setIsLoading(true);
-      await deleteChat(chat._id);
-      setShowDeleteConfirm(false);
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Failed to delete chat:", error);
-      setIsLoading(false);
     }
   };
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog
+        open={isModalOpen("ModalGroupSettings")}
+        onOpenChange={() => closeModal("ModalGroupSettings")}
+      >
         <DialogContent className="sm:max-w-125 max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Group Settings</DialogTitle>
@@ -170,7 +114,6 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                   variant="secondary"
                   className="absolute bottom-0 right-0 rounded-full h-8 w-8"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={isLoading}
                 >
                   <Camera className="h-4 w-4" />
                 </Button>
@@ -181,7 +124,6 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={handleDeleteImage}
-                    disabled={isLoading}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Remove Image
@@ -198,16 +140,12 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                   id="groupName"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
-                  disabled={!isEditingName || isLoading}
+                  disabled={!isEditingName}
                   placeholder="Enter group name"
                 />
                 {isEditingName ? (
                   <>
-                    <Button
-                      size="icon"
-                      onClick={handleUpdateName}
-                      disabled={isLoading}
-                    >
+                    <Button size="icon" onClick={handleUpdateName}>
                       ✓
                     </Button>
                     <Button
@@ -217,7 +155,6 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                         setIsEditingName(false);
                         setGroupName(chat.groupName || "");
                       }}
-                      disabled={isLoading}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -227,7 +164,6 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                     size="icon"
                     variant="outline"
                     onClick={() => setIsEditingName(true)}
-                    disabled={isLoading}
                   >
                     <Edit2 className="h-4 w-4" />
                   </Button>
@@ -238,7 +174,6 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={handleDeleteName}
-                  disabled={isLoading}
                   className="text-destructive hover:text-destructive"
                 >
                   Reset to Default Name
@@ -255,12 +190,10 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
                     key={participant._id}
                     className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50"
                   >
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={participant.avatar || ""} />
-                      <AvatarFallback>
-                        {participant.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <AvatarWithBadge
+                      className="w-8 h-8"
+                      imageUrl={participant.avatar || ""}
+                    />
                     <span className="text-sm">{participant.name}</span>
                   </div>
                 ))}
@@ -268,39 +201,19 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
             </div>
 
             {/* Danger Zone */}
-            <div className="space-y-2 pt-4 border-t">
-              <Label className="text-destructive">Danger Zone</Label>
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowClearConfirm(true)}
-                  disabled={isLoading}
-                  className="w-full justify-start text-orange-600 hover:text-orange-600"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Clear All Messages
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  disabled={isLoading}
-                  className="w-full justify-start text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Group Chat
-                </Button>
-              </div>
-            </div>
+            <DangerZone chat={chat} />
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="outline"
+              onClick={() => closeModal("ModalGroupSettings")}
+            >
               Close
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       <input
         ref={fileInputRef}
         type="file"
@@ -308,54 +221,8 @@ const GroupSettingsDialog: React.FC<GroupSettingsDialogProps> = ({
         className="hidden"
         onChange={handleImageUpload}
       />
-
-      {/* Clear Messages Confirmation */}
-      <AlertDialog open={showClearConfirm} onOpenChange={setShowClearConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Clear All Messages?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete all messages in this chat. This
-              action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleClearMessages}
-              disabled={isLoading}
-              className="bg-orange-600 hover:bg-orange-700"
-            >
-              {isLoading ? "Clearing..." : "Clear Messages"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Delete Chat Confirmation */}
-      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Group Chat?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete this group chat and all its messages
-              for all participants. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteChat}
-              disabled={isLoading}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              {isLoading ? "Deleting..." : "Delete Chat"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 };
 
-export default GroupSettingsDialog;
+export default ModalGroupSettings;

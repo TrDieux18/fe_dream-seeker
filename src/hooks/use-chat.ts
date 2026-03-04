@@ -14,7 +14,7 @@ interface ChatState {
       chat: ChatType
       messages: MessageType[];
    } | null;
-   readMessages: Record<string, string>; 
+   readMessages: Record<string, string>;
 
    isChatsLoading: boolean;
    isUsersLoading: boolean;
@@ -66,7 +66,7 @@ export const useChat = create<ChatState>()((set, get) => ({
    isSendingMsg: false,
    isLoadingMore: false,
    hasMoreChats: true,
-   
+
    fetchAllUsers: async () => {
       set({ isUsersLoading: true });
       try {
@@ -86,16 +86,35 @@ export const useChat = create<ChatState>()((set, get) => ({
          const response = await API.get("/chat/all", {
             params: { limit: 8, offset: 0 }
          });
-         
+
+         const { user } = useAuth.getState();
+         const currentUserId = user?._id;
+
          set({
             chats: response.data.chats,
             hasMoreChats: response.data.hasMore
          });
+
+         // Sync lastReadMessages from server for current user only
+         if (currentUserId) {
+            const readMessagesFromServer: Record<string, string> = {};
+            response.data.chats.forEach((chat: ChatType) => {
+               if (chat.lastReadMessages && chat.lastReadMessages[currentUserId]) {
+                  readMessagesFromServer[chat._id] = chat.lastReadMessages[currentUserId];
+               }
+            });
+
+            set((state) => ({
+               readMessages: {
+                  ...state.readMessages,
+                  ...readMessagesFromServer
+               }
+            }));
+         }
       } catch (error: any) {
          console.error("Failed to fetch chats:", error);
          toast.error(error?.response?.data?.message || "Failed to fetch chats");
-      }
-      finally {
+      } finally {
          set({ isChatsLoading: false });
       }
    },
@@ -111,18 +130,39 @@ export const useChat = create<ChatState>()((set, get) => ({
             params: { limit: 20, offset: currentOffset }
          });
 
+         const { user } = useAuth.getState();
+         const currentUserId = user?._id;
+
          set({
             chats: [...state.chats, ...response.data.chats],
             hasMoreChats: response.data.hasMore,
             isLoadingMore: false
          });
+
+         // Sync lastReadMessages from server for newly loaded chats
+         if (currentUserId) {
+            const readMessagesFromServer: Record<string, string> = {};
+            response.data.chats.forEach((chat: ChatType) => {
+               if (chat.lastReadMessages && chat.lastReadMessages[currentUserId]) {
+                  readMessagesFromServer[chat._id] = chat.lastReadMessages[currentUserId];
+               }
+            });
+
+            if (Object.keys(readMessagesFromServer).length > 0) {
+               set((state) => ({
+                  readMessages: {
+                     ...state.readMessages,
+                     ...readMessagesFromServer
+                  }
+               }));
+            }
+         }
       } catch (error: any) {
          console.error("Failed to fetch more chats:", error);
          toast.error(error?.response?.data?.message || "Failed to load more chats");
          set({ isLoadingMore: false });
       }
    },
-
 
    createChat: async (payload: CreateChatType) => {
       set({ isCreatingChat: true });
@@ -148,7 +188,23 @@ export const useChat = create<ChatState>()((set, get) => ({
       set({ isSingleChatLoading: true });
       try {
          const { data } = await API.get(`/chat/${chatId}`);
-         set({ singleChat: data })
+         set({ singleChat: data });
+
+         // Sync lastReadMessages from server for current user
+         const { user } = useAuth.getState();
+         const currentUserId = user?._id;
+
+         if (data.chat?.lastReadMessages && currentUserId) {
+            const lastReadMessageId = data.chat.lastReadMessages[currentUserId];
+            if (lastReadMessageId) {
+               set((state) => ({
+                  readMessages: {
+                     ...state.readMessages,
+                     [chatId]: lastReadMessageId
+                  }
+               }));
+            }
+         }
       } catch (error) {
          console.error("Failed to fetch single chat:", error);
          toast.error("Failed to fetch chat");
@@ -207,6 +263,11 @@ export const useChat = create<ChatState>()((set, get) => ({
                },
             };
          });
+
+         // Auto mark chat as read after sending message
+         if (userMessage?._id) {
+            get().markChatAsRead(chatId, userMessage._id);
+         }
       } catch (error: any) {
          toast.error(error?.response?.data?.message || "Failed to send message");
          // Remove failed message
@@ -289,13 +350,25 @@ export const useChat = create<ChatState>()((set, get) => ({
       });
    },
 
-   markChatAsRead: (chatId: string, messageId: string) => {
-      set((state) => ({
-         readMessages: {
-            ...state.readMessages,
-            [chatId]: messageId
-         }
-      }));
+   markChatAsRead: async (chatId: string, messageId: string) => {
+      try {
+         // Update local state immediately (optimistic update)
+         set((state) => ({
+            readMessages: {
+               ...state.readMessages,
+               [chatId]: messageId
+            }
+         }));
+
+         // Call API to persist in database
+         await API.post("/chat/mark-read", {
+            chatId,
+            messageId
+         });
+      } catch (error: any) {
+         console.error("Failed to mark chat as read:", error);
+         // Don't show error toast for this - it's not critical to user experience
+      }
    },
 
    isMessageUnread: (chatId: string, message: MessageType | null, currentUserId: string | null) => {
@@ -362,8 +435,14 @@ export const useChat = create<ChatState>()((set, get) => ({
 
    deleteMessage: async (messageId: string, chatId: string) => {
       try {
-         await API.delete(`/chat/message/${messageId}`);
+         const { data } = await API.delete(`/chat/message/${messageId}`);
          get().removeMessageFromChat(chatId, messageId);
+
+         // Update lastMessage in chat list if backend returns new last message
+         if (data.newLastMessage !== undefined) {
+            get().updateChatLastMessage(chatId, data.newLastMessage);
+         }
+
          toast.success("Message deleted successfully");
       } catch (error: any) {
          console.error("Failed to delete message:", error);
@@ -375,13 +454,17 @@ export const useChat = create<ChatState>()((set, get) => ({
       try {
          await API.delete("/chat/messages/clear", { data: { chatId } });
          get().clearMessagesInChat(chatId);
+
+         // Update lastMessage to null in chat list
+         get().updateChatLastMessage(chatId, null as any);
+
          toast.success("Chat messages cleared successfully");
       } catch (error: any) {
          console.error("Failed to clear chat messages:", error);
          toast.error(error?.response?.data?.message || "Failed to clear chat messages");
       }
    },
-   
+
    editMessage: async (messageId: string, content: string) => {
       try {
          const { data } = await API.put("/chat/message/edit", { messageId, content });

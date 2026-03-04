@@ -8,6 +8,7 @@ export type ChatType = {
    createdBy: string;
    groupName?: string;
    groupImage?: string;
+   lastReadMessages?: Record<string, string>;
    createdAt: string;
    updatedAt: string;
 }

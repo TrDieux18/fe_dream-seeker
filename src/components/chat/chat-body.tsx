@@ -4,6 +4,7 @@ import type { MessageType } from "@/types/chat.type";
 import { useEffect, useRef } from "react";
 import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import ChatBodyMessage from "./chat-body-message";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ChatBodyProps {
   chatId: string;
@@ -13,12 +14,14 @@ interface ChatBodyProps {
 
 const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
   const { socket } = useSocket();
+  const { user } = useAuth();
 
   const {
     addNewMessage,
     removeMessageFromChat,
     clearMessagesInChat,
     updateMessageInChat,
+    markChatAsRead,
   } = useChat();
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -84,6 +87,18 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
       socket.off("chat:messages-cleared", handleMessagesCleared);
     };
   }, [socket, chatId, clearMessagesInChat]);
+
+  // Auto mark chat as read when new messages arrive (only for messages from others)
+  useEffect(() => {
+    if (!messages.length || !user?._id) return;
+
+    const lastMessage = messages[messages.length - 1];
+
+    // Only mark as read if the last message is from someone else
+    if (lastMessage && lastMessage.sender?._id !== user._id) {
+      markChatAsRead(chatId, lastMessage._id);
+    }
+  }, [messages, chatId, user?._id, markChatAsRead]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

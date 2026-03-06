@@ -8,8 +8,8 @@ import PostEngagement from "./post-engagement";
 import PostComments from "./post-comments";
 import type { PostType } from "@/types/post.type";
 import { usePost } from "@/hooks/use-post";
-import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
+import { useAuth } from "@/hooks/use-auth";
 
 interface PostProps {
   post: PostType;

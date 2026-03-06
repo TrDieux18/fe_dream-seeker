@@ -1,4 +1,3 @@
-import type React from "react";
 import { useState, useRef } from "react";
 import {
   Dialog,
@@ -8,32 +7,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import AvatarWithBadge from "../avatar-with-badge";
+import { useModal } from "@/hooks/use-modal";
+import type { UserProfile } from "@/types/profile.type";
+import { Button } from "../ui/button";
 import { Camera, Loader2 } from "lucide-react";
-import type { UserType } from "@/types/auth.type";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { useProfile } from "@/hooks/use-profile";
+import { Textarea } from "../ui/textarea";
 
-interface EditProfileDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  user: UserType;
-  isUpdating: boolean;
-  onSave: (data: { name: string; bio: string; avatar?: string }) => void;
-}
+const ModalEditProfile = () => {
+  const { isModalOpen, closeModal, getModalData } = useModal();
 
-const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
-  open,
-  onOpenChange,
-  user,
-  isUpdating,
-  onSave,
-}) => {
+  const { isUpdating, updateProfile } = useProfile();
+  const profileData = getModalData("ModalEditProfile") as {
+    profile: UserProfile;
+  };
+
+  // Check if profileData and profile exist
+  if (!profileData?.profile?.user) {
+    return null;
+  }
+
+  const { user } = profileData.profile;
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio || "");
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    user.avatar || null,
+  );
   const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,7 +68,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const data: { name: string; bio: string; avatar?: string } = {
       name: name.trim(),
       bio: bio.trim(),
@@ -76,16 +78,20 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
       data.avatar = avatarBase64;
     }
 
-    onSave(data);
+    try {
+      await updateProfile(data);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   const handleCancel = () => {
     // Reset form
     setName(user.name);
     setBio(user.bio || "");
-    setAvatarPreview(null);
+    setAvatarPreview(user.avatar || null);
     setAvatarBase64(null);
-    onOpenChange(false);
+    closeModal("ModalEditProfile");
   };
 
   const isFormChanged =
@@ -95,8 +101,11 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[500px]">
+      <Dialog
+        open={isModalOpen("ModalEditProfile")}
+        onOpenChange={() => closeModal("ModalEditProfile")}
+      >
+        <DialogContent className="sm:max-w-125">
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogDescription>
@@ -107,15 +116,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
           <div className="space-y-6 py-4">
             {/* Avatar */}
             <div className="flex flex-col items-center gap-3">
-              <Avatar className="w-24 h-24 border-2 border-border">
-                <AvatarImage
-                  src={avatarPreview || user.avatar || ""}
-                  alt={user.name}
-                />
-                <AvatarFallback className="text-2xl">
-                  {user.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarWithBadge imageUrl={avatarPreview || ""} />
               <Button
                 type="button"
                 variant="ghost"
@@ -194,4 +195,4 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
   );
 };
 
-export default EditProfileDialog;
+export default ModalEditProfile;

@@ -1,7 +1,9 @@
 import ModalClearMessagesConfirm from "@/components/modals/modal-clear-messages-confirm";
 import ModalDeleteChatConfirm from "@/components/modals/modal-delete-chat-confirm";
 import ModalDirectChatSettings from "@/components/modals/modal-direct-chat-settings";
+import ModalEditProfile from "@/components/modals/modal-edit-profile";
 import ModalGroupSettings from "@/components/modals/modal-group-settings";
+import ModalPost from "@/components/modals/modal-post";
 import { useModal } from "@/hooks/use-modal";
 import { useEffect, useState } from "react";
 
@@ -20,6 +22,8 @@ const ModalProvider = () => {
     <>
       {isModalOpen("ModalDirectChatSettings") && <ModalDirectChatSettings />}
       {isModalOpen("ModalGroupSettings") && <ModalGroupSettings />}
+      {isModalOpen("ModalEditProfile") && <ModalEditProfile />}
+      {isModalOpen("ModalPost") && <ModalPost />}
 
       {isModalOpen("ModalClearMessagesConfirm") && (
         <ModalClearMessagesConfirm />

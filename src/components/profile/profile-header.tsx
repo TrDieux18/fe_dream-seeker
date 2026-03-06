@@ -1,25 +1,22 @@
 import type React from "react";
 import type { UserProfile } from "@/types/profile.type";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Settings, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PROTECTED_ROUTES } from "@/routes/routes";
+import AvatarWithBadge from "../avatar-with-badge";
+import { useModal } from "@/hooks/use-modal";
 
 interface ProfileHeaderProps {
   profile: UserProfile;
-  onEditProfile?: () => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  profile,
-  onEditProfile,
-}) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const { user, stats, isOwnProfile } = profile;
 
   const handleMessage = () => {
-    // Navigate to chat with this user
     navigate(PROTECTED_ROUTES.CHAT);
   };
 
@@ -29,12 +26,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
           {/* Avatar */}
           <div className="flex justify-center md:justify-start shrink-0">
-            <Avatar className="w-32 h-32 md:w-40 md:h-40 border-2 border-border">
-              <AvatarImage src={user.avatar || ""} alt={user.name} />
-              <AvatarFallback className="text-4xl">
-                {user.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <AvatarWithBadge
+              imageUrl={user.avatar || ""}
+              className="h-30 w-30"
+            />
           </div>
 
           {/* Info */}
@@ -43,14 +38,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <h1 className="text-xl font-semibold">{user.name}</h1>
 
-              <div className="flex gap-2 w-full sm:w-auto">
+              <div className="flex gap-2 w-full sm:w-auto items-center">
                 {isOwnProfile ? (
                   <>
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={onEditProfile}
-                      className="flex-1 sm:flex-none"
+                      onClick={() => openModal("ModalEditProfile", { profile })}
+                      className="flex-1 sm:flex-none "
                     >
                       Edit Profile
                     </Button>
@@ -86,7 +81,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </div>
 
             {/* Stats */}
-            <div className="flex gap-6 text-sm">
+            <div className="flex gap-6 text-sm items-center">
               <div className="flex gap-1">
                 <span className="font-semibold">{stats.posts}</span>
                 <span className="text-muted-foreground">posts</span>

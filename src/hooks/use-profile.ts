@@ -88,7 +88,7 @@ export const useProfile = create<ProfileState>()((set, get) => ({
       try {
          const response = await API.put("/user/profile", data);
 
-         // Update profile state with new user data
+       
          set((state) => ({
             profile: state.profile
                ? { ...state.profile, user: response.data.user }

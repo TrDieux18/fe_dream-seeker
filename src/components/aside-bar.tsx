@@ -1,4 +1,3 @@
-import { useAuth } from "@/hooks/use-auth";
 import { isUserOnline } from "@/lib/helper";
 import Logo from "@/components/logo";
 import { PROTECTED_ROUTES } from "@/routes/routes";
@@ -17,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { getNavItems } from "@/lib/navigation";
 import { LogOut, ChevronDown } from "lucide-react";
 import { ModeTheme } from "./mode-theme";
+import { useAuth } from "@/hooks/use-auth";
 
 const AsideBar = () => {
   const { user, logout } = useAuth();

@@ -18,11 +18,16 @@ interface PostHeaderProps {
 
 const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
   const { user: currentUser } = useAuth();
-  const isOwner = currentUser?._id === post.user._id;
+  console.log("Post user:", post.user);
+  const isOwner = currentUser?._id === post.user?._id;
 
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
     addSuffix: true,
   });
+
+  if (!post.user) {
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-between px-4 ">

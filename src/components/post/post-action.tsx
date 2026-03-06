@@ -2,8 +2,8 @@ import type React from "react";
 import { MessageCircle, Send, Bookmark } from "lucide-react";
 import { Button } from "../ui/button";
 import type { PostType } from "@/types/post.type";
-import { useAuth } from "@/hooks/use-auth";
 import PostLikeButton from "./post-like-button";
+import { useAuth } from "@/hooks/use-auth";
 
 interface PostActionsProps {
   post: PostType;

@@ -3,10 +3,10 @@ import { useEffect, useState, useRef } from "react";
 import { Spinner } from "../ui/spinner";
 import ChatListItem from "./chat-list-item";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth";
 import ChatListHeader from "./chat-list-header";
 import { useSocket } from "@/hooks/use-socket";
 import type { ChatType, MessageType } from "@/types/chat.type";
+import { useAuth } from "@/hooks/use-auth";
 
 export const ChatList = () => {
   const navigate = useNavigate();

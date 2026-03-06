@@ -1,13 +1,12 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/use-profile";
-import { useAuth } from "@/hooks/use-auth";
 import ProfileHeader from "@/components/profile/profile-header";
 import ProfilePostGrid from "@/components/profile/profile-post-grid";
-import EditProfileDialog from "@/components/profile/edit-profile-dialog";
 import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/hooks/use-auth";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -19,16 +18,14 @@ const ProfilePage: React.FC = () => {
     isLoadingProfile,
     isLoadingPosts,
     isLoadingMore,
-    isUpdating,
+
     hasMorePosts,
     fetchUserProfile,
     fetchUserPosts,
     fetchMorePosts,
-    updateProfile,
+
     clearProfile,
   } = useProfile();
-
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // Use current user ID if no userId param
   const targetUserId = userId || currentUser?._id;
@@ -51,28 +48,6 @@ const ProfilePage: React.FC = () => {
       clearProfile();
     };
   }, [targetUserId, navigate, clearProfile, fetchUserProfile, fetchUserPosts]);
-
-  const handleEditProfile = () => {
-    setIsEditDialogOpen(true);
-  };
-
-  const handleSaveProfile = async (data: {
-    name: string;
-    bio: string;
-    avatar?: string;
-  }) => {
-    try {
-      await updateProfile(data);
-      setIsEditDialogOpen(false);
-      // Refetch profile to get updated data
-      if (targetUserId) {
-        fetchUserProfile(targetUserId);
-      }
-    } catch (error) {
-      // Error is already handled in the hook
-      console.error("Profile update failed:", error);
-    }
-  };
 
   const handleLoadMore = () => {
     if (targetUserId && !isLoadingMore && hasMorePosts) {
@@ -102,22 +77,21 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Profile Header */}
-      <ProfileHeader profile={profile} onEditProfile={handleEditProfile} />
+      <ProfileHeader profile={profile} />
 
-      {/* Tabs */}
       <Tabs defaultValue="posts" className="w-full">
         <div className="border-b border-border/30">
           <div className="max-w-4xl mx-auto px-4 md:px-6">
             <TabsList className="w-full justify-center bg-transparent h-auto p-0 border-0">
               <TabsTrigger
                 value="posts"
-                className="flex-1 max-w-[200px] data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
+                className="flex-1 max-w-50 data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
               >
                 POSTS
               </TabsTrigger>
               <TabsTrigger
                 value="saved"
-                className="flex-1 max-w-[200px] data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
+                className="flex-1 max-w-50 data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
                 disabled
               >
                 SAVED
@@ -144,17 +118,6 @@ const ProfilePage: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Edit Profile Dialog */}
-      {profile.isOwnProfile && currentUser && (
-        <EditProfileDialog
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          user={currentUser}
-          isUpdating={isUpdating}
-          onSave={handleSaveProfile}
-        />
-      )}
     </div>
   );
 };

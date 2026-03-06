@@ -1,5 +1,4 @@
 import { memo, useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useChat } from "@/hooks/use-chat";
 import { cn } from "@/lib/utils";
 import type { MessageType } from "@/types/chat.type";
@@ -8,6 +7,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { ReplyIcon, Heart, Check, X } from "lucide-react";
 import MessageActionsMenu from "./message-actions-menu";
+import { useAuth } from "@/hooks/use-auth";
 
 interface ChatBodyMessageProps {
   message: MessageType;
@@ -24,6 +24,7 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
 
     const userId = user?._id || null;
     const isCurrentUser = message.sender?._id === userId;
+    const isImageOnly = message.image && !message.content && !message.replyTo;
 
     const replySendername =
       message.replyTo?.sender?._id === userId
@@ -72,10 +73,12 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
     );
 
     const messageClass = cn(
-      "px-3 py-2 text-[15px] break-words leading-5 relative",
-      isCurrentUser
+      "text-[15px] break-words leading-5 relative",
+      !isImageOnly && "px-3 py-2",
+      !isImageOnly && isCurrentUser
         ? "bg-primary/90 text-primary-foreground rounded-3xl rounded-tr-md"
-        : "bg-muted/80 text-foreground rounded-3xl rounded-tl-md",
+        : !isImageOnly &&
+            "bg-muted/80 text-foreground rounded-3xl rounded-tl-md",
     );
 
     const replyBoxClass = cn(
@@ -128,7 +131,7 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
                 <img
                   src={message?.image || ""}
                   alt=""
-                  className="rounded-2xl max-w-xs mb-1"
+                  className={cn("rounded-2xl max-w-xs", !isImageOnly && "mb-1")}
                 />
               )}
 

@@ -4,6 +4,7 @@ import type { PostType } from "@/types/post.type";
 import { Heart, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "@/hooks/use-modal";
 
 interface ProfilePostGridProps {
   posts: PostType[];
@@ -20,10 +21,10 @@ const ProfilePostGrid: React.FC<ProfilePostGridProps> = ({
   hasMore,
   onLoadMore,
 }) => {
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
     if (isLoading || isLoadingMore || !hasMore) return;
 
@@ -47,10 +48,6 @@ const ProfilePostGrid: React.FC<ProfilePostGridProps> = ({
       }
     };
   }, [isLoading, isLoadingMore, hasMore, onLoadMore]);
-
-  const handlePostClick = (postId: string) => {
-    navigate(`/post/${postId}`);
-  };
 
   if (isLoading) {
     return (
@@ -91,14 +88,13 @@ const ProfilePostGrid: React.FC<ProfilePostGridProps> = ({
         {posts.map((post) => (
           <button
             key={post._id}
-            onClick={() => handlePostClick(post._id)}
+            onClick={() => openModal("ModalPost", { post })}
             className={cn(
               "group relative aspect-square overflow-hidden rounded-sm",
               "cursor-pointer transition-opacity hover:opacity-90",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
             )}
           >
-            {/* Post Image */}
             <img
               src={post.images[0]}
               alt={post.caption || "Post"}

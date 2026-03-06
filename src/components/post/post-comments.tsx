@@ -5,8 +5,8 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner";
 import type { CommentType, PostType } from "@/types/post.type";
-import { useAuth } from "@/hooks/use-auth";
 import { usePost } from "@/hooks/use-post";
+import { useAuth } from "@/hooks/use-auth";
 
 interface PostCommentsProps {
   post: PostType;

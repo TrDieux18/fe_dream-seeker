@@ -14,11 +14,9 @@ interface SuggestedUser {
 const SuggestionsPanel: React.FC = () => {
   const { user } = useAuth();
 
- 
   const suggestedUsers: SuggestedUser[] = [];
 
   const handleFollow = (userId: string) => {
-    
     console.log("Follow user:", userId);
   };
 

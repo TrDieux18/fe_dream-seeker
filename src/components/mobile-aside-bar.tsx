@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getNavItems } from "@/lib/navigation";
 import { PROTECTED_ROUTES } from "@/routes/routes";
+import { useAuth } from "@/hooks/use-auth";
 
 const MobileAsideBar = () => {
   const { user } = useAuth();

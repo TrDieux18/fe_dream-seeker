@@ -2,8 +2,8 @@ import { useChat } from "@/hooks/use-chat";
 import { useSocket } from "@/hooks/use-socket";
 import type { MessageType } from "@/types/chat.type";
 import { useEffect, useRef } from "react";
-import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import ChatBodyMessage from "./chat-body-message";
+import { shouldShowTimestamp, formatTimestamp } from "@/lib/date-utils";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ChatBodyProps {
@@ -94,7 +94,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
 
     const lastMessage = messages[messages.length - 1];
 
-    // Only mark as read if the last message is from someone else
     if (lastMessage && lastMessage.sender?._id !== user._id) {
       markChatAsRead(chatId, lastMessage._id);
     }
@@ -103,28 +102,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const shouldShowTimestamp = (
-    currentMessage: MessageType,
-    previousMessage: MessageType | null,
-  ): boolean => {
-    if (!previousMessage) return true;
-
-    const currentTime = new Date(currentMessage.createdAt);
-    const previousTime = new Date(previousMessage.createdAt);
-
-    return differenceInMinutes(currentTime, previousTime) > 10;
-  };
-
-  const formatTimestamp = (date: Date): string => {
-    if (isToday(date)) {
-      return format(date, "h:mm a");
-    } else if (isYesterday(date)) {
-      return `Yesterday, ${format(date, "h:mm a")}`;
-    } else {
-      return format(date, "MMM d, h:mm a");
-    }
-  };
 
   return (
     <div className="flex-1 overflow-hidden bg-background">

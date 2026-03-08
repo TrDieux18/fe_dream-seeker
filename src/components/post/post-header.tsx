@@ -10,6 +10,7 @@ import { MoreHorizontal, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { PostType } from "@/types/post.type";
 import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 
 interface PostHeaderProps {
   post: PostType;
@@ -17,8 +18,8 @@ interface PostHeaderProps {
 }
 
 const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  console.log("Post user:", post.user);
   const isOwner = currentUser?._id === post.user?._id;
 
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
@@ -31,7 +32,10 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
 
   return (
     <div className="flex items-center justify-between px-4 ">
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3"
+        onClick={() => navigate(`/profile/${post.user?._id}`)}
+      >
         <Avatar size="default">
           <AvatarImage
             src={post.user.avatar || undefined}

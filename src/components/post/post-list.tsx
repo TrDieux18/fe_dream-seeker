@@ -6,7 +6,7 @@ import EmptyState from "../empty-state";
 import Post from "./post-body";
 
 interface PostListProps {
-  userId?: string; // If provided, shows user's posts only
+  userId?: string; 
 }
 
 const PostList: React.FC<PostListProps> = ({ userId }) => {

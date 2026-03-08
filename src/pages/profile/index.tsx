@@ -29,6 +29,7 @@ const ProfilePage: React.FC = () => {
 
   // Use current user ID if no userId param
   const targetUserId = userId || currentUser?._id;
+  console.log("ProfilePage targetUserId:", targetUserId);
 
   useEffect(() => {
     if (!targetUserId) {

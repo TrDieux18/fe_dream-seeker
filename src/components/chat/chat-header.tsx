@@ -18,10 +18,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
 
   const { openModal } = useModal();
 
-  const { name, subheading, avatar, isOnline, isGroup } = getOtherUserAndGroup(
-    chat,
-    currentUserId,
-  );
+  const { id, name, subheading, avatar, isOnline, isGroup } =
+    getOtherUserAndGroup(chat, currentUserId);
 
   return (
     <>
@@ -40,19 +38,24 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2} />
           </Button>
-          <AvatarWithBadge
-            name={name}
-            src={avatar}
-            isGroup={isGroup}
-            isOnline={isOnline}
-            size="w-10 h-10"
-            className=""
-          />
-          <div>
-            <h5 className="font-semibold text-[15px]">{name}</h5>
-            <p className="text-[13px] text-muted-foreground">
-              {isOnline && !isGroup ? "Active now" : subheading}
-            </p>
+          <div
+            className="flex gap-3 items-center"
+            onClick={() => navigate(`/profile/${id}`)}
+          >
+            <AvatarWithBadge
+              name={name}
+              src={avatar}
+              isGroup={isGroup}
+              isOnline={isOnline}
+              size="w-10 h-10"
+              className=""
+            />
+            <div>
+              <h5 className="font-semibold text-[15px]">{name}</h5>
+              <p className="text-[13px] text-muted-foreground">
+                {isOnline && !isGroup ? "Active now" : subheading}
+              </p>
+            </div>
           </div>
         </div>
 

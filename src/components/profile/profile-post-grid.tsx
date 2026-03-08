@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import type { PostType } from "@/types/post.type";
 import { Heart, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
 import { useModal } from "@/hooks/use-modal";
 
 interface ProfilePostGridProps {
@@ -22,7 +21,6 @@ const ProfilePostGrid: React.FC<ProfilePostGridProps> = ({
   onLoadMore,
 }) => {
   const { openModal } = useModal();
-  const navigate = useNavigate();
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

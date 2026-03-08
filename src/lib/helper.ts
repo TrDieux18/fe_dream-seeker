@@ -16,6 +16,7 @@ export const getOtherUserAndGroup = (
   const isGroup = chat?.isGroup;
   if (isGroup) {
     return {
+      id: chat._id,
       name: chat?.groupName || "Unnamed Group",
       avatar: chat?.groupImage || "",
       isGroup,
@@ -30,6 +31,7 @@ export const getOtherUserAndGroup = (
   const isOnline = isUserOnline(other?._id ?? "");
 
   return {
+    id: other?._id || "",
     name: other?.name || "Unknown User",
     subheading: isOnline ? "Online" : "Offline",
     avatar: other?.avatar || "",

@@ -16,6 +16,7 @@ export interface UpdateProfilePayload {
    name?: string;
    bio?: string;
    avatar?: string;
+   username?: string;
 }
 
 export interface ProfilePostsResponse {

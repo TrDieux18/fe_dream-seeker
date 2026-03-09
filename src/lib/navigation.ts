@@ -1,7 +1,7 @@
 import {
    Home,
    Search,
-   Compass,
+
    MessageCircle,
    Bell,
    PlusSquare,
@@ -22,7 +22,7 @@ export interface NavItem {
 export const getNavItems = (userId?: string): NavItem[] => [
    { label: "Home", icon: Home, path: PROTECTED_ROUTES.FEED },
    { label: "Search", icon: Search, path: PROTECTED_ROUTES.SEARCH },
-   { label: "Explore", icon: Compass, path: PROTECTED_ROUTES.EXPLORE },
+
    { label: "Messages", icon: MessageCircle, path: PROTECTED_ROUTES.CHAT },
    {
       label: "Notifications",

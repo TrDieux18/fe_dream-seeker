@@ -4,6 +4,7 @@ import ModalDirectChatSettings from "@/components/modals/modal-direct-chat-setti
 import ModalEditProfile from "@/components/modals/modal-edit-profile";
 import ModalGroupSettings from "@/components/modals/modal-group-settings";
 import ModalPost from "@/components/modals/modal-post";
+import ModalUserPreview from "@/components/modals/modal-user-preview";
 import { useModal } from "@/hooks/use-modal";
 import { useEffect, useState } from "react";
 
@@ -24,6 +25,7 @@ const ModalProvider = () => {
       {isModalOpen("ModalGroupSettings") && <ModalGroupSettings />}
       {isModalOpen("ModalEditProfile") && <ModalEditProfile />}
       {isModalOpen("ModalPost") && <ModalPost />}
+      {isModalOpen("ModalUserPreview") && <ModalUserPreview />}
 
       {isModalOpen("ModalClearMessagesConfirm") && (
         <ModalClearMessagesConfirm />

@@ -2,6 +2,7 @@ import type React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import AvatarWithBadge from "./avatar-with-badge";
 
 interface SuggestedUser {
   _id: string;
@@ -25,15 +26,10 @@ const SuggestionsPanel: React.FC = () => {
       {/* Current User Profile */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Avatar size="default">
-            <AvatarImage src={user?.avatar ?? undefined} alt={user?.name} />
-            <AvatarFallback>
-              {user?.name?.substring(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <AvatarWithBadge imageUrl={user?.avatar ?? undefined} />
           <div className="flex flex-col">
-            <span className="font-semibold text-sm">{user?.name}</span>
-            <span className="text-xs text-muted-foreground">{user?.email}</span>
+            <span className="font-semibold text-sm">{user?.username}</span>
+            <span className="text-xs text-muted-foreground">{user?.name}</span>
           </div>
         </div>
         <Button variant="ghost" size="sm" className="text-xs font-semibold">

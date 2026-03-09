@@ -18,6 +18,7 @@ interface PostHeaderProps {
 }
 
 const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
+  console.log("PostHeader rendered for post:", post);
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const isOwner = currentUser?._id === post.user?._id;
@@ -39,14 +40,12 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
         <Avatar size="default">
           <AvatarImage
             src={post.user.avatar || undefined}
-            alt={post.user.name}
+            alt={post.user.username}
           />
-          <AvatarFallback>
-            {post.user.name.substring(0, 2).toUpperCase()}
-          </AvatarFallback>
+          <AvatarFallback>{post.user.username}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="font-semibold text-sm">{post.user.name}</span>
+          <span className="font-semibold text-sm">{post.user.username}</span>
           {post.location && (
             <span className="text-xs text-muted-foreground">
               {post.location}

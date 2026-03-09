@@ -18,6 +18,7 @@ interface ModalState {
    isModalOpen: (type: ModalType) => boolean;
    getModalData: (type: ModalType) => ModalData | undefined;
    getModalIndex: (type: ModalType) => number;
+   clearModalData: (type: ModalType) => void;
 }
 
 export const useModal = create<ModalState>((set, get) => ({
@@ -47,5 +48,11 @@ export const useModal = create<ModalState>((set, get) => ({
    getModalIndex: type => get().modals.findIndex(modal => modal.type === type),
 
 
-
+   clearModalData: (type: ModalType) => {
+      set((state) => ({
+         modals: state.modals.map(modal => 
+            modal.type === type ? { ...modal, data: undefined } : modal
+         )
+      }))
+   }
 }))

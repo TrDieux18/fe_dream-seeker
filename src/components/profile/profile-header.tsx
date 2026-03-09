@@ -33,28 +33,20 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
           </div>
 
           {/* Info */}
-          <div className="flex-1 flex flex-col gap-4">
+          <div className="flex-1 flex flex-col gap-2">
             {/* Username and Actions */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <h1 className="text-xl font-semibold">{user.name}</h1>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+              <h1 className="text-xl font-semibold">{user.username}</h1>
 
-              <div className="flex gap-2 w-full sm:w-auto items-center">
+              <div className="flex w-full sm:w-auto items-center">
                 {isOwnProfile ? (
                   <>
                     <Button
-                      variant="secondary"
+                      variant="ghost"
                       size="sm"
                       onClick={() => openModal("ModalEditProfile", { profile })}
-                      className="flex-1 sm:flex-none "
                     >
-                      Edit Profile
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      onClick={() => navigate("/settings")}
-                    >
-                      <Settings className="h-4 w-4" />
+                      <Settings className="h-5 w-5" />
                     </Button>
                   </>
                 ) : (
@@ -79,6 +71,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                 )}
               </div>
             </div>
+
+            <span className="text-sm">{user.name}</span>
 
             {/* Stats */}
             <div className="flex gap-6 text-sm items-center">

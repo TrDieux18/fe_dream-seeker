@@ -32,6 +32,7 @@ const ModalEditProfile = () => {
 
   const { user } = profileData.profile;
   const [name, setName] = useState(user.name);
+  const [username, setUsername] = useState(user.username || "");
   const [bio, setBio] = useState(user.bio || "");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.avatar || null,
@@ -69,10 +70,14 @@ const ModalEditProfile = () => {
   };
 
   const handleSave = async () => {
-    const data: { name: string; bio: string; avatar?: string } = {
+    const data: { name: string; username?: string; bio: string; avatar?: string } = {
       name: name.trim(),
       bio: bio.trim(),
     };
+
+    if (username && username.trim()) {
+      data.username = username.trim();
+    }
 
     if (avatarBase64) {
       data.avatar = avatarBase64;
@@ -86,8 +91,8 @@ const ModalEditProfile = () => {
   };
 
   const handleCancel = () => {
-    // Reset form
     setName(user.name);
+    setUsername(user.username || "");
     setBio(user.bio || "");
     setAvatarPreview(user.avatar || null);
     setAvatarBase64(null);
@@ -96,6 +101,7 @@ const ModalEditProfile = () => {
 
   const isFormChanged =
     name.trim() !== user.name ||
+    username.trim() !== (user.username || "") ||
     bio.trim() !== (user.bio || "") ||
     avatarBase64 !== null;
 
@@ -116,7 +122,10 @@ const ModalEditProfile = () => {
           <div className="space-y-6 py-4">
             {/* Avatar */}
             <div className="flex flex-col items-center gap-3">
-              <AvatarWithBadge imageUrl={avatarPreview || ""} />
+              <AvatarWithBadge
+                imageUrl={avatarPreview || ""}
+                className="h-15 w-15"
+              />
               <Button
                 type="button"
                 variant="ghost"
@@ -142,6 +151,22 @@ const ModalEditProfile = () => {
               />
               <p className="text-xs text-muted-foreground">
                 {name.length}/50 characters
+              </p>
+            </div>
+
+            {/* Username */}
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                maxLength={30}
+                disabled={isUpdating}
+              />
+              <p className="text-xs text-muted-foreground">
+                {(username || "").length}/30 characters
               </p>
             </div>
 

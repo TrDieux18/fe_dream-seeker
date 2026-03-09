@@ -4,4 +4,5 @@ export type ModalType =
    | "ModalEditProfile"
    | "ModalClearMessagesConfirm"
    | "ModalDeleteChatConfirm"
-   | "ModalPost";
+   | "ModalPost"
+   | "ModalUserPreview";

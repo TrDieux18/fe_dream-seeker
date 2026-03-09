@@ -3,7 +3,6 @@ import SignUpPage from "@/pages/auth/sign-up";
 import ChatPage from "@/pages/chat";
 import SingleChatPage from "@/pages/chat/chatId";
 import FeedPage from "@/pages/feed";
-import ExplorePage from "@/pages/explore";
 import SearchPage from "@/pages/search";
 import NotificationsPage from "@/pages/notifications";
 import CreatePage from "@/pages/create";
@@ -18,7 +17,6 @@ export const PROTECTED_ROUTES = {
   CHAT: "/chat",
   CHAT_BY_ID: "/chat/:chatId",
   FEED: "/feed",
-  EXPLORE: "/explore",
   SEARCH: "/search",
   NOTIFICATIONS: "/notifications",
   CREATE_POST: "/create/post",
@@ -49,10 +47,7 @@ export const protectedRoutesPaths = [
     path: PROTECTED_ROUTES.FEED,
     element: <FeedPage />,
   },
-  {
-    path: PROTECTED_ROUTES.EXPLORE,
-    element: <ExplorePage />,
-  },
+
   {
     path: PROTECTED_ROUTES.SEARCH,
     element: <SearchPage />,

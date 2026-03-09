@@ -133,7 +133,7 @@ const AsideBar = () => {
           })}
         </nav>
 
-        {/* User Profile Dropdown */}
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="w-full flex items-center gap-4 px-2 lg:px-3 py-3 mx-2 lg:mx-0 rounded-lg transition-all hover:bg-accent">

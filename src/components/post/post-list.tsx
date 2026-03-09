@@ -1,12 +1,12 @@
 import type React from "react";
 import { useEffect } from "react";
 import { usePost } from "@/hooks/use-post";
-import { Spinner } from "../ui/spinner";
 import EmptyState from "../empty-state";
 import Post from "./post-body";
+import PostSkeleton from "./post-skeleton";
 
 interface PostListProps {
-  userId?: string; 
+  userId?: string;
 }
 
 const PostList: React.FC<PostListProps> = ({ userId }) => {
@@ -22,8 +22,10 @@ const PostList: React.FC<PostListProps> = ({ userId }) => {
 
   if (isFeedLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <Spinner />
+      <div className="w-full">
+        {[...Array(3)].map((_, index) => (
+          <PostSkeleton key={index} />
+        ))}
       </div>
     );
   }

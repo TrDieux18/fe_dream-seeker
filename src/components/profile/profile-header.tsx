@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { PROTECTED_ROUTES } from "@/routes/routes";
 import AvatarWithBadge from "../avatar-with-badge";
 import { useModal } from "@/hooks/use-modal";
+import { useFollow } from "@/hooks/use-follow";
+import { useEffect } from "react";
 
 interface ProfileHeaderProps {
   profile: UserProfile;
@@ -14,10 +16,30 @@ interface ProfileHeaderProps {
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   const { openModal } = useModal();
   const navigate = useNavigate();
-  const { user, stats, isOwnProfile } = profile;
+  const {
+    user,
+    stats,
+    isOwnProfile,
+    isFollowing: profileIsFollowing,
+  } = profile;
+
+  const { toggleFollow, isFollowing, isLoading, setFollowStatus } = useFollow();
+  const following = isFollowing(user._id);
+  const loading = isLoading(user._id);
+
+  useEffect(() => {
+    if (!isOwnProfile) {
+      
+      setFollowStatus(user._id, profileIsFollowing);
+    }
+  }, [user._id, isOwnProfile, profileIsFollowing, setFollowStatus]);
 
   const handleMessage = () => {
     navigate(PROTECTED_ROUTES.CHAT);
+  };
+
+  const handleFollowToggle = async () => {
+    await toggleFollow(user._id);
   };
 
   return (
@@ -52,11 +74,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                 ) : (
                   <>
                     <Button
-                      variant="default"
+                      variant={following ? "secondary" : "default"}
                       size="sm"
                       className="flex-1 sm:flex-none"
+                      onClick={handleFollowToggle}
+                      disabled={loading}
                     >
-                      Follow
+                      {loading
+                        ? "Loading..."
+                        : following
+                          ? "Following"
+                          : "Follow"}
                     </Button>
                     <Button
                       variant="secondary"

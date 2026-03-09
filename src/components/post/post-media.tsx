@@ -1,6 +1,6 @@
 import type React from "react";
-import { useState, useRef } from "react";
-import { Heart } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PostMediaProps {
   images: string[];
@@ -10,7 +10,17 @@ interface PostMediaProps {
 const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showHeartAnimation, setShowHeartAnimation] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState<number>(1);
   const lastTapRef = useRef<number>(0);
+
+  useEffect(() => {
+    // Load first image to get aspect ratio
+    const img = new Image();
+    img.onload = () => {
+      setAspectRatio(img.width / img.height);
+    };
+    img.src = images[0];
+  }, [images]);
 
   const handleImageClick = () => {
     const now = Date.now();
@@ -30,7 +40,10 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
   };
 
   return (
-    <div className="relative bg-black aspect-square w-full">
+    <div
+      className="relative bg-black w-full max-h-150 overflow-hidden flex items-center justify-center"
+      style={{ aspectRatio: aspectRatio.toString() }}
+    >
       {/* Main Image */}
       <img
         src={images[currentIndex]}
@@ -81,19 +94,7 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
                 setCurrentIndex((prev) => Math.max(0, prev - 1));
               }}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <ChevronLeft className="w-5 h-5" />
             </button>
           )}
 
@@ -107,19 +108,7 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
                 );
               }}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight className="w-5 h-5" />
             </button>
           )}
         </>

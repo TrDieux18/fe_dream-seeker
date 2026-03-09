@@ -1,5 +1,4 @@
 import type React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { PostType } from "@/types/post.type";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
+import AvatarWithBadge from "../avatar-with-badge";
 
 interface PostHeaderProps {
   post: PostType;
@@ -18,7 +18,6 @@ interface PostHeaderProps {
 }
 
 const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
-  console.log("PostHeader rendered for post:", post);
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const isOwner = currentUser?._id === post.user?._id;
@@ -32,20 +31,20 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
   }
 
   return (
-    <div className="flex items-center justify-between px-4 ">
+    <div className="flex items-center justify-between px-4">
       <div
-        className="flex items-center gap-3"
+        className="flex items-center gap-3 group cursor-pointer"
         onClick={() => navigate(`/profile/${post.user?._id}`)}
       >
-        <Avatar size="default">
-          <AvatarImage
-            src={post.user.avatar || undefined}
-            alt={post.user.username}
-          />
-          <AvatarFallback>{post.user.username}</AvatarFallback>
-        </Avatar>
+        <AvatarWithBadge imageUrl={post.user.avatar || ""} />
         <div className="flex flex-col">
-          <span className="font-semibold text-sm">{post.user.username}</span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-sm group-hover:underline">
+              {post.user.username}
+            </span>
+            <span className="text-xs text-muted-foreground">•</span>
+            <span className="text-xs text-muted-foreground">{timeAgo}</span>
+          </div>
           {post.location && (
             <span className="text-xs text-muted-foreground">
               {post.location}
@@ -55,7 +54,6 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-xs text-muted-foreground">{timeAgo}</span>
         {isOwner && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

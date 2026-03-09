@@ -23,10 +23,17 @@ const ModalUserPreview = () => {
   const user = data?.user;
   const userId = user?._id;
 
-  const { posts, fetchUserPosts, isLoadingPosts } = useProfile();
+  const { posts, profile, fetchUserPosts, isLoadingPosts, fetchUserProfile } =
+    useProfile();
 
   useEffect(() => {
-    if (userId) {
+    if (userId && isModalOpen("ModalUserPreview")) {
+      fetchUserProfile(userId);
+    }
+  }, [userId, fetchUserProfile]);
+
+  useEffect(() => {
+    if (userId && isModalOpen("ModalUserPreview")) {
       fetchUserPosts(userId);
     }
   }, [userId, fetchUserPosts]);
@@ -81,11 +88,15 @@ const ModalUserPreview = () => {
             <p className="text-xs text-muted-foreground">Posts</p>
           </div>
           <div>
-            <p className="font-semibold text-sm">0</p>
+            <p className="font-semibold text-sm">
+              {profile?.stats?.followers || 0}
+            </p>
             <p className="text-xs text-muted-foreground">Followers</p>
           </div>
           <div>
-            <p className="font-semibold text-sm">0</p>
+            <p className="font-semibold text-sm">
+              {profile?.stats?.following || 0}
+            </p>
             <p className="text-xs text-muted-foreground">Following</p>
           </div>
         </div>

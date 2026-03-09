@@ -7,9 +7,11 @@ import ProfilePostGrid from "@/components/profile/profile-post-grid";
 import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
+import { useModal } from "@/hooks/use-modal";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
+  const { closeAllModals } = useModal();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const {
@@ -38,6 +40,7 @@ const ProfilePage: React.FC = () => {
 
     // Clear previous profile data
     clearProfile();
+    closeAllModals();
 
     // Fetch profile and posts
     fetchUserProfile(targetUserId);

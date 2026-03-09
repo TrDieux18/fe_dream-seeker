@@ -13,7 +13,7 @@ function App() {
 
   const { user, isAuthStatus, isAuthStatusLoading } = useAuth();
 
-  useSocket();
+  const { connectSocket, disconnectSocket } = useSocket();
 
   const isAuth = isAuthRoute(pathname);
 
@@ -21,6 +21,15 @@ function App() {
     if (isAuth) return;
     isAuthStatus();
   }, [isAuthStatus, isAuth]);
+
+  // Connect socket when user is authenticated
+  useEffect(() => {
+    if (user) {
+      connectSocket();
+    } else {
+      disconnectSocket();
+    }
+  }, [user, connectSocket, disconnectSocket]);
 
   if (isAuthStatusLoading && !user && !isAuth) {
     return (

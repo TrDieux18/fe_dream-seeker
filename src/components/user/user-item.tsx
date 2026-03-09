@@ -1,21 +1,20 @@
 import type { UserType } from "@/types/auth.type";
 import type React from "react";
 import { Button } from "../ui/button";
-import { useModal } from "@/hooks/use-modal";
+import { useNavigate } from "react-router-dom";
 
 interface UserItemProps {
   user: UserType;
 }
 
 const UserItem: React.FC<UserItemProps> = ({ user }) => {
-  const { openModal } = useModal();
-
+  const navigate = useNavigate();
   return (
     <>
-      <div className="p-4 hover:bg-muted rounded-lg  flex items-center justify-between ">
+      <div className="p-4 hover:bg-muted rounded-lg  flex items-center justify-between group">
         <div
           className="flex items-center gap-3"
-          onMouseEnter={() => openModal("ModalUserPreview", { user })}
+          onClick={() => navigate(`/profile/${user._id}`)}
         >
           <img
             src={user.avatar || "/default-avatar.png"}
@@ -23,7 +22,7 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <p className="font-medium">{user.username}</p>
+            <p className="font-medium group-hover:underline">{user.username}</p>
             <p className="text-sm text-muted-foreground">{user.name}</p>
           </div>
         </div>

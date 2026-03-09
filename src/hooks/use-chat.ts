@@ -321,26 +321,19 @@ export const useChat = create<ChatState>()((set, get) => ({
    addNewMessage: (chatId: string, message: MessageType) => {
       set((state) => {
          if (!state.singleChat) {
-            console.log("No active chat to add message to");
             return state;
          }
 
          if (state.singleChat.chat._id !== chatId) {
-            console.log("Message chatId doesn't match current chat", {
-               messageChatId: chatId,
-               currentChatId: state.singleChat.chat._id
-            });
             return state;
          }
 
 
          const messageExists = state.singleChat.messages.some(m => m._id === message._id);
          if (messageExists) {
-            console.log("Message already exists, skipping");
             return state;
          }
 
-         console.log("Adding new message to chat:", message);
          return {
             singleChat: {
                ...state.singleChat,

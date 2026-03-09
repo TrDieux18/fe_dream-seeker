@@ -57,7 +57,7 @@ export const useAuth = create<AuthState>()(
                set({ isLoggingIn: false });
             }
          },
-         
+
          logout: async () => {
             try {
                await API.post("/auth/logout");
@@ -77,8 +77,7 @@ export const useAuth = create<AuthState>()(
                useSocket.getState().connectSocket();
             } catch (error: any) {
                toast.error(error.response?.data?.message || "Failed to fetch auth status");
-
-               console.log(error);
+               console.error("Auth status error:", error);
             }
             finally {
                set({ isAuthStatusLoading: false });

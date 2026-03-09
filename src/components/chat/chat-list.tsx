@@ -61,7 +61,6 @@ export const ChatList = () => {
           !isLoadingMore &&
           !isChatsLoading
         ) {
-          console.log("📜 Fetching more chats...");
           fetchMoreChats();
         }
       },
@@ -87,7 +86,6 @@ export const ChatList = () => {
     if (!socket) return;
 
     const handleNewChat = (newChat: ChatType) => {
-      console.log("New chat received via socket:", newChat);
       addNewChat(newChat);
     };
     socket.on("chat:new", handleNewChat);
@@ -103,7 +101,6 @@ export const ChatList = () => {
       chatId: string;
       lastMessage: MessageType;
     }) => {
-      console.log("Chat updated received via socket:", data);
       updateChatLastMessage(data.chatId, data.lastMessage);
     };
     socket.on("chat:update", handleChatUpdated);
@@ -116,7 +113,6 @@ export const ChatList = () => {
     if (!socket) return;
 
     const handleGroupUpdated = (updatedChat: ChatType) => {
-      console.log("Group updated received via socket:", updatedChat);
       updateChatInList(updatedChat);
     };
     socket.on("chat:group-updated", handleGroupUpdated);
@@ -129,7 +125,6 @@ export const ChatList = () => {
     if (!socket) return;
 
     const handleChatDeleted = (data: { chatId: string }) => {
-      console.log("Chat deleted received via socket:", data);
       removeChatFromList(data.chatId);
     };
     socket.on("chat:deleted", handleChatDeleted);

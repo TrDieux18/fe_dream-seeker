@@ -86,10 +86,9 @@ export const useProfile = create<ProfileState>()((set, get) => ({
    updateProfile: async (data: UpdateProfilePayload) => {
       set({ isUpdating: true });
       try {
-         console.log("Updating profile with data:", data);
          const response = await API.put("/user/profile", data);
 
-       
+
          set((state) => ({
             profile: state.profile
                ? { ...state.profile, user: response.data.user }

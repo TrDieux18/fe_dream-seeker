@@ -1,25 +1,27 @@
 import type React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import AvatarWithBadge from "./avatar-with-badge";
-
-interface SuggestedUser {
-  _id: string;
-  name: string;
-  avatar?: string;
-  username?: string;
-  mutualFollowers?: number;
-}
+import { useFollow } from "@/hooks/use-follow";
+import { useEffect } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 const SuggestionsPanel: React.FC = () => {
   const { user } = useAuth();
 
-  const suggestedUsers: SuggestedUser[] = [];
+  const {
+    suggestUsers: suggestedUsers,
+    getSuggestionUsers,
+    isLoadingSuggestions,
+    toggleFollow,
+    isLoading,
+  } = useFollow();
 
-  const handleFollow = (userId: string) => {
-    console.log("Follow user:", userId);
-  };
+  useEffect(() => {
+    if (user) {
+      getSuggestionUsers();
+    }
+  }, [user]);
 
   return (
     <div className="space-y-6">
@@ -53,7 +55,22 @@ const SuggestionsPanel: React.FC = () => {
         </div>
 
         {/* Suggested Users List */}
-        {suggestedUsers.length === 0 ? (
+        {isLoadingSuggestions ? (
+          <div className="space-y-3">
+            {suggestedUsers.map((_, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+                <Skeleton className="h-6 w-12" />
+              </div>
+            ))}
+          </div>
+        ) : suggestedUsers.length === 0 ? (
           <div className="text-center py-6">
             <p className="text-sm text-muted-foreground">
               No suggestions available
@@ -61,42 +78,36 @@ const SuggestionsPanel: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {suggestedUsers.map((suggestedUser) => (
-              <div
-                key={suggestedUser._id}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <Avatar size="sm">
-                    <AvatarImage
-                      src={suggestedUser.avatar ?? undefined}
-                      alt={suggestedUser.name}
-                    />
-                    <AvatarFallback>
-                      {suggestedUser.name.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-sm">
-                      {suggestedUser.name}
-                    </span>
-                    {suggestedUser.mutualFollowers && (
-                      <span className="text-xs text-muted-foreground">
-                        Followed by {suggestedUser.mutualFollowers} others
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs font-semibold text-blue-500 hover:text-blue-600 hover:bg-transparent"
-                  onClick={() => handleFollow(suggestedUser._id)}
+            {suggestedUsers.map((suggestedUser) => {
+              const isUserLoading = isLoading(suggestedUser._id);
+
+              return (
+                <div
+                  key={suggestedUser._id}
+                  className="flex items-center justify-between"
                 >
-                  Follow
-                </Button>
-              </div>
-            ))}
+                  <div className="flex items-center gap-3">
+                    <AvatarWithBadge
+                      imageUrl={suggestedUser.avatar ?? undefined}
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-sm">
+                        {suggestedUser.name}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => toggleFollow(suggestedUser._id)}
+                    variant="ghost"
+                    size="sm"
+                    disabled={isUserLoading}
+                    className="text-xs font-semibold text-blue-500 hover:text-blue-600 hover:bg-transparent disabled:opacity-50"
+                  >
+                    {isUserLoading ? "Loading..." : "Follow"}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

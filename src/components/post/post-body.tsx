@@ -77,10 +77,10 @@ const Post: React.FC<PostProps> = ({ post }) => {
         onUnlike={unlikePost}
         onComment={handleCommentClick}
         onShare={() => {
-          console.log("Share post:", post._id);
+          // TODO: Implement share functionality
         }}
         onSave={() => {
-          console.log("Save post:", post._id);
+          // TODO: Implement save functionality
         }}
       />
 

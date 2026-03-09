@@ -51,8 +51,6 @@ const ModalPost = () => {
 
   if (!post) return null;
 
-  console.log(singlePost?.comments);
-
   const isLiked = user ? post.likes.includes(user._id) : false;
   const comments = singlePost?.comments || [];
   const hasMultipleImages = post.images.length > 1;

@@ -10,6 +10,7 @@ export interface UserProfile {
       chats: number;
    };
    isOwnProfile: boolean;
+   isFollowing: boolean;
 }
 
 export interface UpdateProfilePayload {

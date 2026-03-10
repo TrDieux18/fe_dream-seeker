@@ -41,7 +41,7 @@ export const useSocket = create<SocketState>((set, get) => ({
          set({ isConnected: true });
       });
 
-      newSocket.on("disconnect", (reason) => {
+      newSocket.on("disconnect", (_reason) => {
          set({ isConnected: false, onlineUsers: [] });
       });
 

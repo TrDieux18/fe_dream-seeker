@@ -7,6 +7,7 @@ import ChatListHeader from "./chat-list-header";
 import { useSocket } from "@/hooks/use-socket";
 import type { ChatType, MessageType } from "@/types/chat.type";
 import { useAuth } from "@/hooks/use-auth";
+import ChatListSkeleton from "./chat-list-skeleton";
 
 export const ChatList = () => {
   const navigate = useNavigate();
@@ -165,9 +166,7 @@ export const ChatList = () => {
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="px-0 pb-4">
           {isChatsLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Spinner />
-            </div>
+            [...Array(6)].map((_, idx) => <ChatListSkeleton key={idx} />)
           ) : filteredChats.length === 0 ? (
             <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
               {searchQuery ? "No chats found." : "No chats available."}
@@ -183,7 +182,6 @@ export const ChatList = () => {
                 />
               ))}
 
-              {/* Infinite scroll trigger element */}
               {!searchQuery && hasMoreChats && (
                 <div ref={observerTarget} className="py-4 flex justify-center">
                   {isLoadingMore && <Spinner />}

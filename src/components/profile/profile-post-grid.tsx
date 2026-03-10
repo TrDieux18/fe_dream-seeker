@@ -4,6 +4,7 @@ import type { PostType } from "@/types/post.type";
 import { Heart, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useModal } from "@/hooks/use-modal";
+import ProfilePostGridSkeleton from "./profile-post-grid-skeleton";
 
 interface ProfilePostGridProps {
   posts: PostType[];
@@ -48,18 +49,7 @@ const ProfilePostGrid: React.FC<ProfilePostGridProps> = ({
   }, [isLoading, isLoadingMore, hasMore, onLoadMore]);
 
   if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-6">
-        <div className="grid grid-cols-3 gap-1 md:gap-2">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div
-              key={i}
-              className="aspect-square bg-muted animate-pulse rounded-sm"
-            />
-          ))}
-        </div>
-      </div>
-    );
+    return <ProfilePostGridSkeleton />;
   }
 
   if (!posts.length) {

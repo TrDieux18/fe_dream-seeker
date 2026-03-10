@@ -4,10 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/use-profile";
 import ProfileHeader from "@/components/profile/profile-header";
 import ProfilePostGrid from "@/components/profile/profile-post-grid";
-import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useModal } from "@/hooks/use-modal";
+import ProfileSkeleton from "@/components/profile/profile-skeleton";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -60,8 +60,8 @@ const ProfilePage: React.FC = () => {
 
   if (isLoadingProfile) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen">
+        <ProfileSkeleton />
       </div>
     );
   }

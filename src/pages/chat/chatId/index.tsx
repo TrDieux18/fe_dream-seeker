@@ -2,7 +2,7 @@ import ChatBody from "@/components/chat/chat-body";
 import ChatFooter from "@/components/chat/chat-footer";
 import ChatHeader from "@/components/chat/chat-header";
 import EmptyState from "@/components/empty-state";
-import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/use-auth";
 import { useChat } from "@/hooks/use-chat";
 import useChatId from "@/hooks/use-chat-id";
@@ -44,7 +44,10 @@ const SingleChatPage = () => {
   if (isSingleChatLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Spinner className="w-11 h-11 text-primary!" />
+        <div className="flex flex-col items-center justify-center gap-y-4">
+          <Skeleton className="h-30 w-30 rounded-full" />
+          <Skeleton className="h-10 w-48" />
+        </div>
       </div>
     );
   }

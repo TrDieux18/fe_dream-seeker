@@ -3,11 +3,13 @@ import { Button } from "../ui/button";
 import { useChat } from "@/hooks/use-chat";
 import React, { memo, useEffect, useState, type ReactNode } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useNavigate } from "react-router-dom";
 
 import { Spinner } from "../ui/spinner";
 import type { UserType } from "@/types/auth.type";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Checkbox } from "../ui/checkbox";
+import { PROTECTED_ROUTES } from "@/routes/routes";
 
 interface NewChatPopoverProps {
   children?: ReactNode;
@@ -17,6 +19,7 @@ export const NewChatPopover: React.FC<NewChatPopoverProps> = memo(
   ({ children }) => {
     const { fetchAllUsers, users, isUsersLoading, createChat, isCreatingChat } =
       useChat();
+    const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
     const [isGroupMode, setIsGroupMode] = useState(false);
@@ -61,11 +64,15 @@ export const NewChatPopover: React.FC<NewChatPopoverProps> = memo(
 
     const handleCreateGroup = async () => {
       if (selectedUsers.length === 0) return;
-      await createChat({
+      const chat = await createChat({
         isGroup: true,
         participants: selectedUsers,
         groupName: groupName.trim() || undefined,
       });
+
+      if (chat?._id) {
+        navigate(PROTECTED_ROUTES.CHAT_BY_ID.replace(":chatId", chat._id));
+      }
 
       setIsOpen(false);
       resetState();
@@ -74,10 +81,14 @@ export const NewChatPopover: React.FC<NewChatPopoverProps> = memo(
     const handleCreateChat = async (userId: string) => {
       setLoadingUserId(userId);
       try {
-        await createChat({
+        const chat = await createChat({
           isGroup: false,
           participantId: userId,
         });
+
+        if (chat?._id) {
+          navigate(PROTECTED_ROUTES.CHAT_BY_ID.replace(":chatId", chat._id));
+        }
 
         setIsOpen(false);
         resetState();

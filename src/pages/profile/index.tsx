@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useModal } from "@/hooks/use-modal";
 import ProfileSkeleton from "@/components/profile/profile-skeleton";
 import { usePost } from "@/hooks/use-post";
+import { Bookmark, Grid3X3 } from "lucide-react";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -100,21 +101,24 @@ const ProfilePage: React.FC = () => {
       <ProfileHeader profile={profile} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="border-b border-border/30">
+        <div className="border-b border-border/30 bg-background">
           <div className="max-w-4xl mx-auto px-4 md:px-6">
-            <TabsList className="w-full justify-center bg-transparent h-auto p-0 border-0">
+            <TabsList
+              variant="line"
+              className="w-full justify-center h-auto p-0 border-0"
+            >
               <TabsTrigger
                 value="posts"
-                className="flex-1 max-w-50 data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
+                className="flex-1 max-w-50 rounded-none border-0 border-b-2 border-b-transparent data-[state=active]:border-b-foreground"
               >
-                POSTS
+                <Grid3X3 className="size-6" />
               </TabsTrigger>
               <TabsTrigger
                 value="saved"
-                className="flex-1 max-w-50 data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
+                className="flex-1 max-w-50 rounded-none border-0 border-b-2 border-b-transparent data-[state=active]:border-b-foreground"
                 disabled={!isOwnProfile}
               >
-                SAVED
+                <Bookmark className="size-6" />
               </TabsTrigger>
             </TabsList>
           </div>

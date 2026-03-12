@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState, useRef, useEffect } from "react";
-import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, Images } from "lucide-react";
 
 interface PostMediaProps {
   images: string[];
@@ -41,17 +41,19 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
 
   return (
     <div
-      className="relative bg-black w-full max-h-150 overflow-hidden flex items-center justify-center"
+      className="relative mx-5 overflow-hidden rounded-[28px] border border-border/50 bg-black/95 shadow-[0_28px_60px_-40px_rgba(0,0,0,0.55)]"
       style={{ aspectRatio: aspectRatio.toString() }}
     >
       {/* Main Image */}
       <img
         src={images[currentIndex]}
         alt="Post content"
-        className="w-full h-full object-contain cursor-pointer select-none"
+        className="h-full w-full cursor-pointer select-none object-contain"
         onClick={handleImageClick}
         draggable={false}
       />
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-black/35 via-transparent to-transparent" />
 
       {/* Heart Animation on Double Tap */}
       {showHeartAnimation && (
@@ -65,13 +67,22 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
 
       {/* Carousel Indicators */}
       {images.length > 1 && (
+        <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
+          <Images className="h-3.5 w-3.5" strokeWidth={2} />
+          <span>
+            {currentIndex + 1}/{images.length}
+          </span>
+        </div>
+      )}
+
+      {images.length > 1 && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
           {images.map((_, index) => (
             <button
               key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${
+              className={`h-1.5 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-white w-2 h-2"
+                  ? "w-6 bg-white"
                   : "bg-white/60 hover:bg-white/80"
               }`}
               onClick={(e) => {
@@ -88,7 +99,7 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
         <>
           {currentIndex > 0 && (
             <button
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+              className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -100,7 +111,7 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
 
           {currentIndex < images.length - 1 && (
             <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+              className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) =>

@@ -1,5 +1,7 @@
 import type React from "react";
 import type { PostType } from "@/types/post.type";
+import { formatDistanceToNow } from "date-fns";
+import MetaPill from "../ui/meta-pill";
 
 interface PostEngagementProps {
   post: PostType;
@@ -10,28 +12,44 @@ const PostEngagement: React.FC<PostEngagementProps> = ({
   post,
   onViewComments,
 }) => {
+  const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
+    addSuffix: true,
+  });
+
   return (
-    <div className="px-4 pb-0.5">
-      {/* Likes Count */}
-      {post.likesCount > 0 && (
-        <div className="mb-0">
-          <span className="font-semibold text-sm">
-            {post.likesCount.toLocaleString()}{" "}
-            {post.likesCount === 1 ? "like" : "likes"}
+    <div className="px-5 py-4">
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        <MetaPill className="font-semibold">
+          {post.likesCount.toLocaleString()}{" "}
+          {post.likesCount === 1 ? "like" : "likes"}
+        </MetaPill>
+        <MetaPill onClick={onViewComments} variant="outline">
+          {post.commentsCount.toLocaleString()}{" "}
+          {post.commentsCount === 1 ? "comment" : "comments"}
+        </MetaPill>
+        <MetaPill
+          className="text-xs uppercase tracking-[0.16em] text-muted-foreground/80"
+          variant="subtle"
+        >
+          {timeAgo}
+        </MetaPill>
+      </div>
+
+      {post.caption && (
+        <div className="mt-3 rounded-2xl bg-muted/35 px-4 py-3 text-sm leading-6 text-foreground/90">
+          <span className="mr-2 font-semibold text-foreground">
+            {post.user.username}
           </span>
+          <span>{post.caption}</span>
         </div>
       )}
 
-      {/* Caption removed from here - now at top after media */}
-
-      {/* View Comments */}
       {post.commentsCount > 0 && (
         <button
-          className="text-muted-foreground text-sm hover:text-foreground transition-colors"
+          className="mt-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           onClick={onViewComments}
         >
-          View all {post.commentsCount.toLocaleString()}{" "}
-          {post.commentsCount === 1 ? "comment" : "comments"}
+          Open discussion
         </button>
       )}
     </div>

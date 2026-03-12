@@ -20,7 +20,6 @@ export type CommentType = {
    content: string;
    likes: string[];
    likesCount: number;
-   parentComment?: string;
    createdAt: string;
    updatedAt: string;
 };
@@ -34,7 +33,6 @@ export type CreatePostType = {
 export type CreateCommentType = {
    postId: string;
    content: string;
-   parentCommentId?: string;
 };
 
 export type FeedBreakdown = {

@@ -42,7 +42,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
   };
 
   return (
-    <div className="border-b border-border/30 bg-background">
+    <div>
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
         <div className="flex flex-col md:flex-row gap-8 md:gap-12">
           {/* Avatar */}

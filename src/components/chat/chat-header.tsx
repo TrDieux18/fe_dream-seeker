@@ -38,7 +38,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2} />
           </Button>
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-3 items-center group">
             <AvatarWithBadge
               name={name}
               src={avatar}
@@ -49,7 +49,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
             />
             <div>
               <h5
-                className="font-semibold text-[15px] "
+                className="font-semibold text-[15px] cursor-pointer hover:underline"
                 onClick={() => navigate(`/profile/${id}`)}
               >
                 {name}

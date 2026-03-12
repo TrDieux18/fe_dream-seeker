@@ -210,8 +210,7 @@ export const usePost = create<PostState>()((set, get) => ({
       set({ isSendingComment: true });
       try {
          const response = await API.post(`/post/${payload.postId}/comment`, {
-            content: payload.content,
-            parentCommentId: payload.parentCommentId
+            content: payload.content
          });
          const newComment = response.data.comment;
 

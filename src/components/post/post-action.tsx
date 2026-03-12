@@ -1,10 +1,10 @@
 import type React from "react";
 import { MessageCircle, Send, Bookmark } from "lucide-react";
-import { Button } from "../ui/button";
 import type { PostType } from "@/types/post.type";
 import PostLikeButton from "./post-like-button";
 import { useAuth } from "@/hooks/use-auth";
 import { Spinner } from "../ui/spinner";
+import ActionPillButton from "../ui/action-pill-button";
 
 interface PostActionsProps {
   post: PostType;
@@ -31,52 +31,35 @@ const PostActions: React.FC<PostActionsProps> = ({
   const isLiked = currentUser ? post.likes.includes(currentUser._id) : false;
 
   return (
-    <div className="px-2">
-      <div className="flex items-center justify-between">
+    <div className="px-5 pt-4">
+      <div className="flex items-center justify-between gap-3">
         {/* Left Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {/* Like Button with Floating Hearts */}
           <PostLikeButton
             isLiked={isLiked}
             onLike={() => onLike(post._id)}
             onUnlike={() => onUnlike(post._id)}
+            showLabel
           />
 
           {/* Comment Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 hover:bg-transparent"
-            onClick={onComment}
-          >
-            <MessageCircle
-              className="w-7 h-7 hover:text-muted-foreground"
-              strokeWidth={2}
-            />
-          </Button>
+          <ActionPillButton label="Comment" onClick={onComment}>
+            <MessageCircle className="h-5 w-5" strokeWidth={2} />
+          </ActionPillButton>
 
           {/* Share Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 hover:bg-transparent"
+          <ActionPillButton
+            label="Share"
+            className="hidden sm:flex"
             onClick={onShare}
           >
-            <Send
-              className="w-7 h-7 hover:text-muted-foreground"
-              strokeWidth={2}
-            />
-          </Button>
+            <Send className="h-5 w-5" strokeWidth={2} />
+          </ActionPillButton>
         </div>
 
         {/* Right Actions */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 hover:bg-transparent"
-          onClick={onSave}
-          disabled={isSaving}
-        >
+        <ActionPillButton active={isSaved} onClick={onSave} disabled={isSaving}>
           {isSaving ? (
             <span className="text-sm text-muted-foreground">
               <Spinner className="w-5 h-5" />
@@ -84,14 +67,12 @@ const PostActions: React.FC<PostActionsProps> = ({
           ) : (
             <Bookmark
               className={
-                isSaved
-                  ? "w-7 h-7 fill-current text-foreground"
-                  : "w-7 h-7 hover:text-muted-foreground"
+                isSaved ? "h-5 w-5 fill-current text-foreground" : "h-5 w-5"
               }
               strokeWidth={2}
             />
           )}
-        </Button>
+        </ActionPillButton>
       </div>
     </div>
   );

@@ -4,13 +4,13 @@ import type { CommentType } from "@/types/post.type";
 import { formatDistanceToNow } from "date-fns";
 import { Heart } from "lucide-react";
 import { Button } from "../ui/button";
+import MetaPill from "../ui/meta-pill";
 
 interface PostCommentItemProps {
   comment: CommentType;
   currentUserId: string | null;
   onLike?: (commentId: string) => void;
   onUnlike?: (commentId: string) => void;
-  onReply?: (comment: CommentType) => void;
 }
 
 const PostCommentItem: React.FC<PostCommentItemProps> = ({
@@ -18,7 +18,6 @@ const PostCommentItem: React.FC<PostCommentItemProps> = ({
   currentUserId,
   onLike,
   onUnlike,
-  onReply,
 }) => {
   const isLiked = currentUserId ? comment.likes.includes(currentUserId) : false;
   const timeAgo = formatDistanceToNow(new Date(comment.createdAt), {
@@ -35,7 +34,7 @@ const PostCommentItem: React.FC<PostCommentItemProps> = ({
   };
 
   return (
-    <div className="flex gap-3 py-2">
+    <div className="flex gap-3 rounded-2xl border border-border/50 bg-background/80 px-3 py-3 shadow-[0_12px_32px_-28px_rgba(0,0,0,0.55)]">
       <Avatar size="sm">
         <AvatarImage
           src={comment.user.avatar || undefined}
@@ -49,16 +48,18 @@ const PostCommentItem: React.FC<PostCommentItemProps> = ({
       <div className="flex-1">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <span className="font-semibold text-sm mr-2">
+            <span className="mr-2 text-sm font-semibold">
               {comment.user.name}
             </span>
-            <span className="text-sm">{comment.content}</span>
+            <span className="text-sm leading-6 text-foreground/90">
+              {comment.content}
+            </span>
           </div>
 
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 hover:bg-transparent shrink-0"
+            className="h-8 w-8 shrink-0 rounded-full hover:bg-muted"
             onClick={handleLikeClick}
           >
             <Heart
@@ -72,19 +73,16 @@ const PostCommentItem: React.FC<PostCommentItemProps> = ({
           </Button>
         </div>
 
-        <div className="flex items-center gap-4 mt-1">
+        <div className="mt-2 flex items-center gap-3">
           <span className="text-xs text-muted-foreground">{timeAgo}</span>
           {comment.likesCount > 0 && (
-            <span className="text-xs text-muted-foreground font-semibold">
+            <MetaPill
+              className="px-2 py-0.5 text-[11px] font-semibold"
+              variant="subtle"
+            >
               {comment.likesCount} {comment.likesCount === 1 ? "like" : "likes"}
-            </span>
+            </MetaPill>
           )}
-          <button
-            className="text-xs text-muted-foreground font-semibold hover:text-foreground"
-            onClick={() => onReply?.(comment)}
-          >
-            Reply
-          </button>
         </div>
       </div>
     </div>

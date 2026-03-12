@@ -38,10 +38,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2} />
           </Button>
-          <div
-            className="flex gap-3 items-center"
-            onClick={() => navigate(`/profile/${id}`)}
-          >
+          <div className="flex gap-3 items-center">
             <AvatarWithBadge
               name={name}
               src={avatar}
@@ -51,7 +48,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
               className=""
             />
             <div>
-              <h5 className="font-semibold text-[15px]">{name}</h5>
+              <h5
+                className="font-semibold text-[15px] "
+                onClick={() => navigate(`/profile/${id}`)}
+              >
+                {name}
+              </h5>
               <p className="text-[13px] text-muted-foreground">
                 {isOnline && !isGroup ? "Active now" : subheading}
               </p>

@@ -33,6 +33,7 @@ export const getOtherUserAndGroup = (
   return {
     id: other?._id || "",
     name: other?.name || "Unknown User",
+    username: other?.username || "",
     subheading: isOnline ? "Online" : "Offline",
     avatar: other?.avatar || "",
     isGroup: false,

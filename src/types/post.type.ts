@@ -37,12 +37,25 @@ export type CreateCommentType = {
    parentCommentId?: string;
 };
 
+export type FeedBreakdown = {
+   prioritizedCount: number;
+   suggestedCount: number;
+   prioritizedTotal: number;
+   suggestedTotal: number;
+};
+
 export type FeedResponse = {
    posts: PostType[];
+   feedBreakdown: FeedBreakdown;
    pagination: {
       page: number;
       limit: number;
       total: number;
       pages: number;
    };
+};
+
+export type SavedPostsResponse = {
+   posts: PostType[];
+   savedPostIds: string[];
 };

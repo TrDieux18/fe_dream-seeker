@@ -32,14 +32,14 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
 
   return (
     <div className="flex items-center justify-between px-4">
-      <div
-        className="flex items-center gap-3 group cursor-pointer"
-        onClick={() => navigate(`/profile/${post.user?._id}`)}
-      >
+      <div className="flex items-center gap-3 group cursor-pointer">
         <AvatarWithBadge imageUrl={post.user.avatar || ""} />
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm group-hover:underline">
+            <span
+              className="font-semibold text-sm group-hover:underline"
+              onClick={() => navigate(`/profile/${post.user?._id}`)}
+            >
               {post.user.username}
             </span>
             <span className="text-xs text-muted-foreground">•</span>

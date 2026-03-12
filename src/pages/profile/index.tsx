@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/use-profile";
 import ProfileHeader from "@/components/profile/profile-header";
@@ -8,11 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useModal } from "@/hooks/use-modal";
 import ProfileSkeleton from "@/components/profile/profile-skeleton";
+import { usePost } from "@/hooks/use-post";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const { closeAllModals } = useModal();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("posts");
   const { user: currentUser } = useAuth();
   const {
     profile,
@@ -28,9 +30,18 @@ const ProfilePage: React.FC = () => {
 
     clearProfile,
   } = useProfile();
+  const {
+    savedPosts,
+    isSavedPostsLoading,
+    fetchSavedPosts,
+    hasLoadedSavedPosts,
+  } = usePost();
 
   // Use current user ID if no userId param
   const targetUserId = userId || currentUser?._id;
+  const isOwnProfile = Boolean(
+    currentUser?._id && targetUserId === currentUser._id,
+  );
 
   useEffect(() => {
     if (!targetUserId) {
@@ -51,6 +62,12 @@ const ProfilePage: React.FC = () => {
       clearProfile();
     };
   }, [targetUserId, navigate, clearProfile, fetchUserProfile, fetchUserPosts]);
+
+  useEffect(() => {
+    if (activeTab === "saved" && isOwnProfile && !hasLoadedSavedPosts) {
+      fetchSavedPosts();
+    }
+  }, [activeTab, fetchSavedPosts, hasLoadedSavedPosts, isOwnProfile]);
 
   const handleLoadMore = () => {
     if (targetUserId && !isLoadingMore && hasMorePosts) {
@@ -82,7 +99,7 @@ const ProfilePage: React.FC = () => {
       {/* Profile Header */}
       <ProfileHeader profile={profile} />
 
-      <Tabs defaultValue="posts" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="border-b border-border/30">
           <div className="max-w-4xl mx-auto px-4 md:px-6">
             <TabsList className="w-full justify-center bg-transparent h-auto p-0 border-0">
@@ -95,7 +112,7 @@ const ProfilePage: React.FC = () => {
               <TabsTrigger
                 value="saved"
                 className="flex-1 max-w-50 data-[state=active]:border-t-2 data-[state=active]:border-t-foreground rounded-none border-t-2 border-t-transparent"
-                disabled
+                disabled={!isOwnProfile}
               >
                 SAVED
               </TabsTrigger>
@@ -114,11 +131,13 @@ const ProfilePage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="saved" className="mt-0">
-          <div className="max-w-4xl mx-auto px-4 md:px-6 py-20 text-center">
-            <p className="text-muted-foreground">
-              Saved posts feature coming soon...
-            </p>
-          </div>
+          <ProfilePostGrid
+            posts={savedPosts}
+            isLoading={isSavedPostsLoading}
+            isLoadingMore={false}
+            hasMore={false}
+            onLoadMore={() => undefined}
+          />
         </TabsContent>
       </Tabs>
     </div>

@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import type { PostType } from "@/types/post.type";
 import PostLikeButton from "./post-like-button";
 import { useAuth } from "@/hooks/use-auth";
+import { Spinner } from "../ui/spinner";
 
 interface PostActionsProps {
   post: PostType;
@@ -12,6 +13,8 @@ interface PostActionsProps {
   onComment: () => void;
   onShare?: () => void;
   onSave?: () => void;
+  isSaving?: boolean;
+  isSaved?: boolean;
 }
 
 const PostActions: React.FC<PostActionsProps> = ({
@@ -21,6 +24,8 @@ const PostActions: React.FC<PostActionsProps> = ({
   onComment,
   onShare,
   onSave,
+  isSaving,
+  isSaved,
 }) => {
   const { user: currentUser } = useAuth();
   const isLiked = currentUser ? post.likes.includes(currentUser._id) : false;
@@ -70,11 +75,22 @@ const PostActions: React.FC<PostActionsProps> = ({
           size="icon"
           className="h-9 w-9 hover:bg-transparent"
           onClick={onSave}
+          disabled={isSaving}
         >
-          <Bookmark
-            className="w-7 h-7 hover:text-muted-foreground"
-            strokeWidth={2}
-          />
+          {isSaving ? (
+            <span className="text-sm text-muted-foreground">
+              <Spinner className="w-5 h-5" />
+            </span>
+          ) : (
+            <Bookmark
+              className={
+                isSaved
+                  ? "w-7 h-7 fill-current text-foreground"
+                  : "w-7 h-7 hover:text-muted-foreground"
+              }
+              strokeWidth={2}
+            />
+          )}
         </Button>
       </div>
     </div>

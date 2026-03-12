@@ -29,7 +29,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
 
   useEffect(() => {
     if (!isOwnProfile) {
-      
       setFollowStatus(user._id, profileIsFollowing);
     }
   }, [user._id, isOwnProfile, profileIsFollowing, setFollowStatus]);
@@ -76,7 +75,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                     <Button
                       variant={following ? "secondary" : "default"}
                       size="sm"
-                      className="flex-1 sm:flex-none"
+                      className="flex-1 sm:flex-none mr-2"
                       onClick={handleFollowToggle}
                       disabled={loading}
                     >
@@ -92,7 +91,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                       onClick={handleMessage}
                       className="flex-1 sm:flex-none"
                     >
-                      <MessageCircle className="h-4 w-4 mr-2" />
+                      <MessageCircle className="h-4 w-4" />
                       Message
                     </Button>
                   </>

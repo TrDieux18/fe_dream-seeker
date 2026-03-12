@@ -10,15 +10,27 @@ interface PostListProps {
 }
 
 const PostList: React.FC<PostListProps> = ({ userId }) => {
-  const { posts, isFeedLoading, fetchFeed, fetchUserPosts } = usePost();
+  const {
+    posts,
+    isFeedLoading,
+    fetchFeed,
+    fetchUserPosts,
+    fetchSavedPosts,
+    hasLoadedSavedPosts,
+    feedBreakdown,
+  } = usePost();
 
   useEffect(() => {
+    if (!hasLoadedSavedPosts) {
+      fetchSavedPosts();
+    }
+
     if (userId) {
       fetchUserPosts(userId);
     } else {
       fetchFeed();
     }
-  }, [userId]);
+  }, [fetchFeed, fetchSavedPosts, fetchUserPosts, hasLoadedSavedPosts, userId]);
 
   if (isFeedLoading) {
     return (
@@ -47,6 +59,14 @@ const PostList: React.FC<PostListProps> = ({ userId }) => {
 
   return (
     <div className="w-full">
+      {!userId && (feedBreakdown?.suggestedCount || 0) > 0 && (
+        <div className="mb-4 rounded-2xl border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+          Showing {feedBreakdown?.suggestedCount} suggested post
+          {feedBreakdown?.suggestedCount === 1 ? "" : "s"} after recent posts
+          from accounts you follow.
+        </div>
+      )}
+
       {posts.map((post) => (
         <Post key={post._id} post={post} />
       ))}

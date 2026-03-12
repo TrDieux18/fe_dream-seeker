@@ -1,5 +1,13 @@
 import { API } from "@/lib/axios-client";
-import type { PostType, CreatePostType, CreateCommentType, CommentType, FeedResponse } from "@/types/post.type";
+import type {
+   PostType,
+   CreatePostType,
+   CreateCommentType,
+   CommentType,
+   FeedResponse,
+   FeedBreakdown,
+   SavedPostsResponse
+} from "@/types/post.type";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -10,14 +18,22 @@ interface PostState {
       comments: CommentType[];
    } | null;
 
+   savedPostIds: string[];
+   savedPosts: PostType[];
+   feedBreakdown: FeedBreakdown | null;
+   hasLoadedSavedPosts: boolean;
+
    isFeedLoading: boolean;
    isCreatingPost: boolean;
    isPostLoading: boolean;
    isCommentsLoading: boolean;
    isSendingComment: boolean;
+   isSavedPostsLoading: boolean;
 
+   savingPostIds: string[];
    fetchFeed: (page?: number, limit?: number) => void;
    fetchUserPosts: (userId: string) => void;
+   fetchSavedPosts: () => Promise<void>;
    createPost: (payload: CreatePostType) => Promise<PostType | null>;
    fetchPostById: (postId: string) => void;
    deletePost: (postId: string) => void;
@@ -28,23 +44,33 @@ interface PostState {
 
    updatePostLike: (postId: string, userId: string, isLike: boolean) => void;
    addNewComment: (postId: string, comment: CommentType) => void;
+   savePost: (postId: string) => void;
 }
 
 export const usePost = create<PostState>()((set, get) => ({
    posts: [],
    singlePost: null,
+   savedPostIds: [],
+   savedPosts: [],
+   feedBreakdown: null,
+   hasLoadedSavedPosts: false,
 
    isFeedLoading: false,
    isCreatingPost: false,
    isPostLoading: false,
    isCommentsLoading: false,
    isSendingComment: false,
+   isSavedPostsLoading: false,
+   savingPostIds: [],
 
    fetchFeed: async (page = 1, limit = 10) => {
       set({ isFeedLoading: true });
       try {
          const response = await API.get<FeedResponse>(`/post/feed?page=${page}&limit=${limit}`);
-         set({ posts: response.data.posts });
+         set({
+            posts: response.data.posts,
+            feedBreakdown: response.data.feedBreakdown
+         });
       } catch (error: any) {
          console.error("Failed to fetch feed:", error);
          toast.error(error?.response?.data?.message || "Failed to fetch feed");
@@ -57,12 +83,29 @@ export const usePost = create<PostState>()((set, get) => ({
       set({ isFeedLoading: true });
       try {
          const response = await API.get(`/post/user/${userId}`);
-         set({ posts: response.data.posts });
+         set({ posts: response.data.posts, feedBreakdown: null });
       } catch (error: any) {
          console.error("Failed to fetch user posts:", error);
          toast.error(error?.response?.data?.message || "Failed to fetch user posts");
       } finally {
          set({ isFeedLoading: false });
+      }
+   },
+
+   fetchSavedPosts: async () => {
+      set({ isSavedPostsLoading: true });
+      try {
+         const response = await API.get<SavedPostsResponse>("/post/saved");
+         set({
+            savedPosts: response.data.posts,
+            savedPostIds: response.data.savedPostIds,
+            hasLoadedSavedPosts: true
+         });
+      } catch (error: any) {
+         console.error("Failed to fetch saved posts:", error);
+         toast.error(error?.response?.data?.message || "Failed to fetch saved posts");
+      } finally {
+         set({ isSavedPostsLoading: false });
       }
    },
 
@@ -251,6 +294,60 @@ export const usePost = create<PostState>()((set, get) => ({
                post: { ...state.singlePost.post, commentsCount: state.singlePost.post.commentsCount + 1 },
                comments: [comment, ...state.singlePost.comments]
             } : null
+         }));
+      }
+   },
+
+   savePost: async (postId: string) => {
+      if (get().savingPostIds.includes(postId)) {
+         return;
+      }
+
+      set((state) => ({
+         savingPostIds: [...state.savingPostIds, postId]
+      }));
+
+      try {
+         const isSaved = get().savedPostIds.includes(postId);
+
+         if (isSaved) {
+            const response = await API.delete(`/post/${postId}/save`);
+
+            set((state) => ({
+               savedPostIds: state.savedPostIds.filter((id) => id !== postId),
+               savedPosts: state.savedPosts.filter((post) => post._id !== postId)
+            }));
+
+            toast.success(response.data?.message || "Post removed from saved successfully");
+            return;
+         }
+
+         const response = await API.post(`/post/${postId}/save`);
+         const savedPostId = response.data?.result?.postId?.toString?.() || postId;
+         const singlePost = get().singlePost;
+         const singlePostMatch =
+            singlePost && singlePost.post._id === savedPostId ? singlePost.post : null;
+         const postToSave =
+            get().posts.find((post) => post._id === savedPostId) || singlePostMatch;
+
+         set((state) => ({
+            savedPostIds: state.savedPostIds.includes(savedPostId)
+               ? state.savedPostIds
+               : [...state.savedPostIds, savedPostId],
+            savedPosts:
+               postToSave && !state.savedPosts.some((post) => post._id === savedPostId)
+                  ? [postToSave, ...state.savedPosts]
+                  : state.savedPosts,
+            hasLoadedSavedPosts: true
+         }));
+
+         toast.success(response.data?.message || "Post saved successfully");
+      } catch (error: any) {
+         console.error("Failed to save post:", error);
+         toast.error(error?.response?.data?.message || "Failed to save post");
+      } finally {
+         set((state) => ({
+            savingPostIds: state.savingPostIds.filter((id) => id !== postId)
          }));
       }
    }

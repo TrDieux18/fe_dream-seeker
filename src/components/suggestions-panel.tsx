@@ -5,9 +5,11 @@ import AvatarWithBadge from "./avatar-with-badge";
 import { useFollow } from "@/hooks/use-follow";
 import { useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 const SuggestionsPanel: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const {
     suggestUsers: suggestedUsers,
@@ -57,7 +59,7 @@ const SuggestionsPanel: React.FC = () => {
         {/* Suggested Users List */}
         {isLoadingSuggestions ? (
           <div className="space-y-3">
-            {suggestedUsers.map((_, index) => (
+            {[...Array(5)].map((_, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Skeleton className="w-10 h-10 rounded-full" />
@@ -84,14 +86,22 @@ const SuggestionsPanel: React.FC = () => {
               return (
                 <div
                   key={suggestedUser._id}
-                  className="flex items-center justify-between"
+                  className="flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-3">
                     <AvatarWithBadge
                       imageUrl={suggestedUser.avatar ?? undefined}
                     />
                     <div className="flex flex-col">
-                      <span className="font-semibold text-sm">
+                      <span
+                        className="text-sm font-semibold group-hover:underline cursor-pointer"
+                        onClick={() =>
+                          navigate(`/profile/${suggestedUser._id}`)
+                        }
+                      >
+                        {suggestedUser.username}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
                         {suggestedUser.name}
                       </span>
                     </div>

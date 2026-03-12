@@ -23,14 +23,15 @@ const Post: React.FC<PostProps> = ({ post }) => {
     fetchComments,
     singlePost,
     isCommentsLoading,
+    savePost,
+    savingPostIds,
+    savedPostIds,
   } = usePost();
   const { user: currentUser } = useAuth();
   const [showComments, setShowComments] = useState(false);
 
   const handleDelete = (postId: string) => {
-    if (confirm("Are you sure you want to delete this post?")) {
-      deletePost(postId);
-    }
+    deletePost(postId);
   };
 
   const handleDoubleTapLike = () => {
@@ -56,7 +57,13 @@ const Post: React.FC<PostProps> = ({ post }) => {
     }
   };
 
+  const handleSave = () => {
+    savePost(post._id);
+  };
+
   const comments = singlePost?.post._id === post._id ? singlePost.comments : [];
+  const isSaving = savingPostIds.includes(post._id);
+  const isSaved = savedPostIds.includes(post._id);
 
   return (
     <Card className="w-full max-w-117.5 mx-auto mb-4 overflow-hidden border-border/50">
@@ -79,9 +86,9 @@ const Post: React.FC<PostProps> = ({ post }) => {
         onShare={() => {
           // TODO: Implement share functionality
         }}
-        onSave={() => {
-          // TODO: Implement save functionality
-        }}
+        onSave={handleSave}
+        isSaving={isSaving}
+        isSaved={isSaved}
       />
 
       <PostEngagement post={post} onViewComments={handleViewComments} />

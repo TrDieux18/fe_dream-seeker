@@ -1,5 +1,6 @@
 import { isUserOnline } from "@/lib/helper";
 import Logo from "@/components/logo";
+import AvatarWithBadge from "@/components/avatar-with-badge";
 import { PROTECTED_ROUTES } from "@/routes/routes";
 import MobileAsideBar from "@/components/mobile-aside-bar";
 import {
@@ -10,11 +11,10 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
-import AvatarWithBadge from "@/components/avatar-with-badge";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { getNavItems } from "@/lib/navigation";
-import { LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown, User } from "lucide-react";
 import { ModeTheme } from "./mode-theme";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -23,8 +23,8 @@ const AsideBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isOnline = isUserOnline(user?._id);
   const navItems = getNavItems(user?._id);
+  const isCurrentUserOnline = isUserOnline(user?._id);
 
   const isActive = (path: string) => {
     if (path === PROTECTED_ROUTES.FEED) {
@@ -65,6 +65,7 @@ const AsideBar = () => {
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
+            const isProfileItem = item.label === "Profile";
 
             if (item.children && item.children.length > 0) {
               return (
@@ -118,13 +119,26 @@ const AsideBar = () => {
                 className={cn(
                   "w-full flex items-center gap-4 px-3 py-3 rounded-lg transition-all",
                   "hover:bg-accent",
-                  active && "font-bold",
+                  active && "bg-accent/70 font-bold",
                 )}
               >
-                <Icon
-                  className={cn("size-7 shrink-0", active && "font-bold")}
-                  strokeWidth={active ? 2.5 : 2}
-                />
+                {isProfileItem ? (
+                  <AvatarWithBadge
+                    imageUrl={user?.avatar ?? undefined}
+                    altText={user?.name}
+                    fallbackText={user?.name?.charAt(0)?.toUpperCase()}
+                    className="h-8 w-8 shrink-0"
+                    ringClassName={cn(
+                      "ring-2 ring-transparent transition-all",
+                      active && "ring-primary/25",
+                    )}
+                  />
+                ) : (
+                  <Icon
+                    className={cn("size-7 shrink-0", active && "font-bold")}
+                    strokeWidth={active ? 2.5 : 2}
+                  />
+                )}
                 <span className="hidden lg:block text-base">{item.label}</span>
                 {item.badge && item.badge > 0 && (
                   <span className="hidden lg:block ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
@@ -138,31 +152,73 @@ const AsideBar = () => {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="w-full flex items-center gap-4 px-2 lg:px-3 py-3 mx-2 lg:mx-0 rounded-lg transition-all hover:bg-accent">
+            <button className="mx-2 lg:mx-3 flex items-center justify-center lg:justify-start gap-3 rounded-2xl border border-border/60 bg-muted/30 px-2 lg:px-3 py-2.5 transition-all hover:border-border hover:bg-accent/70">
               <AvatarWithBadge
-                name={user?.name || "Unknown"}
-                src={user?.avatar ?? undefined}
-                isOnline={isOnline}
+                imageUrl={user?.avatar ?? undefined}
+                altText={user?.name}
+                fallbackText={user?.name?.charAt(0)?.toUpperCase()}
+                size="sm"
+                badgeType="status-dot"
+                isOnline={isCurrentUserOnline}
+                ringClassName="ring-2 ring-background"
               />
-              <span className="hidden lg:block text-base font-semibold truncate flex-1 text-left">
-                {user?.name}
-              </span>
+              <div className="hidden min-w-0 flex-1 lg:flex lg:flex-col lg:text-left">
+                <span className="truncate text-sm font-semibold text-foreground">
+                  {user?.name}
+                </span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user?.username}
+                </span>
+              </div>
+              <ChevronDown className="hidden size-4 shrink-0 text-muted-foreground lg:block" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-56"
+            className="w-72 rounded-2xl border-border/60 p-2"
             align="end"
             side="right"
             sideOffset={8}
           >
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-semibold">{user?.name}</p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {user?.email}
-                </p>
+            <DropdownMenuLabel className="font-normal px-1 py-1">
+              <div className="flex items-center gap-3 rounded-xl bg-muted/40 px-3 py-3">
+                <AvatarWithBadge
+                  imageUrl={user?.avatar ?? undefined}
+                  altText={user?.name}
+                  fallbackText={user?.name?.charAt(0)?.toUpperCase()}
+                  size="md"
+                  badgeType="status-dot"
+                  isOnline={isCurrentUserOnline}
+                  ringClassName="ring-2 ring-background"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {user?.name}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {user?.username}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {user?.email}
+                  </p>
+                </div>
               </div>
             </DropdownMenuLabel>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              onClick={() =>
+                handleNavClick(
+                  PROTECTED_ROUTES.PROFILE_BY_ID.replace(
+                    ":userId",
+                    user?._id || "",
+                  ),
+                )
+              }
+            >
+              <User className="mr-2 size-4" />
+              View profile
+            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 

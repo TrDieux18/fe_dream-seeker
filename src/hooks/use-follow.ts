@@ -7,9 +7,11 @@ interface FollowState {
    followingMap: Record<string, boolean>;
    loadingMap: Record<string, boolean>;
    suggestUsers: UserType[];
-
    isLoadingSuggestions: boolean;
-
+   followerUser: UserType[]
+   isFetchingFollowers: boolean;
+   userFollowing: UserType[];
+   isFetchingUserFollowing: boolean;
 
 
    checkFollowStatus: (userId: string) => Promise<boolean>;
@@ -18,6 +20,9 @@ interface FollowState {
    isFollowing: (userId: string) => boolean;
    isLoading: (userId: string) => boolean;
    getSuggestionUsers: () => Promise<void>;
+   getFollowerUser: (userId: string) => Promise<void>;
+   getUserFollowing: (userId: string) => Promise<void>;
+
 }
 
 export const useFollow = create<FollowState>()((set, get) => ({
@@ -25,6 +30,12 @@ export const useFollow = create<FollowState>()((set, get) => ({
    loadingMap: {},
    suggestUsers: [],
    isLoadingSuggestions: false,
+   followerUser: [],
+   isFetchingFollowers: false,
+   userFollowing: [],
+   isFetchingUserFollowing: false,
+
+
    getSuggestionUsers: async () => {
       set({ isLoadingSuggestions: true });
       try {
@@ -132,5 +143,37 @@ export const useFollow = create<FollowState>()((set, get) => ({
 
    isLoading: (userId: string) => {
       return get().loadingMap[userId] || false;
+   },
+
+   getFollowerUser: async (userId: string) => {
+      set({ isFetchingFollowers: true });
+      try {
+         const response = await API.get(`/follow/followers/${userId}`);
+         const followers: UserType[] = (response.data.followers || [])
+            .map((follow: { followerId?: UserType }) => follow?.followerId)
+            .filter(Boolean);
+         set({ followerUser: followers });
+      } catch (error: any) {
+         console.error("Failed to fetch followers:", error);
+         toast.error(error?.response?.data?.message || "Failed to load followers");
+      } finally {
+         set({ isFetchingFollowers: false });
+      }
+   },
+
+   getUserFollowing: async (userId: string) => {
+      set({ isFetchingUserFollowing: true });
+      try {
+         const response = await API.get(`/follow/following/${userId}`);
+         const followings = (response.data.followings || [])
+            .map((follow: { followingId?: UserType }) => follow?.followingId)
+            .filter(Boolean);
+         set({ userFollowing: followings });
+      } catch (error: any) {
+         console.error("Failed to fetch following users:", error);
+         toast.error(error?.response?.data?.message || "Failed to load following users");
+      } finally {
+         set({ isFetchingUserFollowing: false });
+      }
    }
 }));

@@ -1,5 +1,5 @@
 import { useChat } from "@/hooks/use-chat";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Spinner } from "../ui/spinner";
 import ChatListItem from "./chat-list-item";
 import { useNavigate } from "react-router-dom";
@@ -35,16 +35,19 @@ export const ChatList = () => {
   // Ref for infinite scroll observer
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  const filteredChats =
-    chats.filter(
-      (chat) =>
-        chat.groupName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        chat.participants.some(
-          (p) =>
-            p._id !== currentUserId &&
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ),
-    ) || [];
+  const filteredChats = useMemo(() => {
+    return (
+      chats.filter(
+        (chat) =>
+          chat.groupName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          chat.participants.some(
+            (p) =>
+              p._id !== currentUserId &&
+              p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
+      ) || []
+    );
+  }, [chats, searchQuery, currentUserId]);
 
   useEffect(() => {
     fetchChats();

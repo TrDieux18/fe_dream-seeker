@@ -34,7 +34,7 @@ const SearchPage = () => {
   return (
     <FeedLayout showRightSidebar={false}>
       <div className="py-8 gap-y-3 flex flex-col items-center ">
-        <InputGroup className="rounded-lg border-none bg-muted px-3 py-2 shadow-none h-12 ">
+        <InputGroup className="rounded-lg border-none bg-muted px-2 py-2 shadow-none h-12 ">
           <InputGroupAddon className="pl-0 text-muted-foreground">
             <Search
               className="text-muted-foreground"

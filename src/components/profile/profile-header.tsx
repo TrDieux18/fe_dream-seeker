@@ -107,11 +107,27 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
                 <span className="font-semibold">{stats.posts}</span>
                 <span className="text-muted-foreground">posts</span>
               </div>
-              <button className="flex gap-1 hover:text-foreground transition-colors">
+              <button
+                className="flex gap-1 hover:text-foreground transition-colors hover:cursor-pointer hover:underline"
+                onClick={() =>
+                  openModal("ModalFollowList", {
+                    userId: user._id,
+                    mode: "followers",
+                  })
+                }
+              >
                 <span className="font-semibold">{stats.followers}</span>
                 <span className="text-muted-foreground">followers</span>
               </button>
-              <button className="flex gap-1 hover:text-foreground transition-colors">
+              <button
+                className="flex gap-1 hover:text-foreground transition-colors hover:cursor-pointer hover:underline"
+                onClick={() =>
+                  openModal("ModalFollowList", {
+                    userId: user._id,
+                    mode: "following",
+                  })
+                }
+              >
                 <span className="font-semibold">{stats.following}</span>
                 <span className="text-muted-foreground">following</span>
               </button>

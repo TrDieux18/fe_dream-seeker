@@ -31,7 +31,7 @@ const ChatListHeader: React.FC<ChatListHeaderProps> = ({ onSearch }) => {
       </div>
 
       <div>
-        <InputGroup className="rounded-lg border-none bg-muted/60 px-3 py-2 shadow-none">
+        <InputGroup className="rounded-lg border-none bg-muted/60 px-2 py-2 shadow-none">
           <InputGroupAddon className="pl-0 text-muted-foreground">
             <Search
               className="text-muted-foreground"

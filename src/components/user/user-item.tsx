@@ -22,11 +22,15 @@ const UserItem: React.FC<UserItemProps> = ({ user }) => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <p className="font-medium group-hover:underline">{user.username}</p>
+            <p className="font-medium group-hover:underline cursor-pointer">
+              {user.username}
+            </p>
             <p className="text-sm text-muted-foreground">{user.name}</p>
           </div>
         </div>
-        <Button size="sm">Follow</Button>
+        <Button size="sm" className="cursor-pointer">
+          Follow
+        </Button>
       </div>
     </>
   );

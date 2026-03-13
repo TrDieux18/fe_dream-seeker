@@ -111,7 +111,7 @@ const SuggestionsPanel: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     disabled={isUserLoading}
-                    className="text-xs font-semibold text-blue-500 hover:text-blue-600 hover:bg-transparent disabled:opacity-50"
+                    className="text-xs cursor-pointer font-semibold text-blue-500 hover:text-blue-600 hover:bg-transparent disabled:opacity-50"
                   >
                     {isUserLoading ? "Loading..." : "Follow"}
                   </Button>

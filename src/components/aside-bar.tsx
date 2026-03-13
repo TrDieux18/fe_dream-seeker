@@ -45,11 +45,14 @@ const AsideBar = () => {
           flex-col justify-between py-6"
       >
         <div className="px-3 lg:px-6">
-          <div className="flex items-center gap-2">
+          <div
+            className="flex items-center gap-2 hover:cursor-pointer "
+            onClick={() => navigate(PROTECTED_ROUTES.FEED)}
+          >
             <Logo
               url={PROTECTED_ROUTES.FEED}
               imgClass="size-7"
-              textClass="text-foreground text-xl font-bold"
+              textClass="text-foreground text-xl font-bold "
               showText={false}
             />
             <span className="hidden lg:block font-bold text-xl">
@@ -133,7 +136,6 @@ const AsideBar = () => {
           })}
         </nav>
 
-        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="w-full flex items-center gap-4 px-2 lg:px-3 py-3 mx-2 lg:mx-0 rounded-lg transition-all hover:bg-accent">

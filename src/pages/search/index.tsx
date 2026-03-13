@@ -5,8 +5,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
 import UserItem from "@/components/user/user-item";
+import UserItemSkeleton from "@/components/user/user-item-skeleton";
 import { useSearch } from "@/hooks/use-search";
 import FeedLayout from "@/layouts/feed-layout";
 import { Search } from "lucide-react";
@@ -51,11 +51,11 @@ const SearchPage = () => {
         </InputGroup>
         <Separator />
 
-        {/* Hiển thị trạng thái loading */}
         {isLoading && (
-          <div className="text-muted-foreground flex items-center gap-2">
-            <Spinner />
-            Đang tìm kiếm...
+          <div className="w-full space-y-2">
+            {[...Array(6)].map((_, idx) => (
+              <UserItemSkeleton key={idx} />
+            ))}
           </div>
         )}
 

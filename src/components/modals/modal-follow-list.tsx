@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useFollow } from "@/hooks/use-follow";
 import UserItem from "../user/user-item";
+import UserItemSkeleton from "../user/user-item-skeleton";
 
 type FollowListMode = "followers" | "following";
 
@@ -107,7 +108,9 @@ const ModalFollowList = () => {
           </InputGroup>
 
           <div className="mt-2 max-h-80 overflow-y-auto">
-            {!isLoading && filteredUsers.length === 0 ? (
+            {isLoading ? (
+              [...Array(6)].map((_, idx) => <UserItemSkeleton key={idx} />)
+            ) : filteredUsers.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground mt-4">
                 {config.emptyText}
               </p>

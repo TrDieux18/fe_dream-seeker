@@ -10,6 +10,8 @@ import { useModal } from "@/hooks/use-modal";
 import ProfileSkeleton from "@/components/profile/profile-skeleton";
 import { usePost } from "@/hooks/use-post";
 import { Bookmark, Grid3X3 } from "lucide-react";
+import EmptyState from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -86,11 +88,11 @@ const ProfilePage: React.FC = () => {
 
   if (!profile) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <h2 className="text-2xl font-semibold">Profile not found</h2>
-        <p className="text-muted-foreground">
-          The user you're looking for doesn't exist.
-        </p>
+      <div
+        className="flex flex-col items-center justify-center min-h-screen gap-4 hover:cursor-pointer"
+        onClick={() => navigate("/feed")}
+      >
+        <EmptyState title="Profile not found" description="Back to Feed" />
       </div>
     );
   }

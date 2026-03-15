@@ -19,7 +19,7 @@ export interface NavItem {
    children?: NavItem[];
 }
 
-export const getNavItems = (userId?: string): NavItem[] => [
+export const getNavItems = (userId?: string, unreadNotificationCount: number = 0): NavItem[] => [
    { label: "Home", icon: Home, path: PROTECTED_ROUTES.FEED },
    { label: "Search", icon: Search, path: PROTECTED_ROUTES.SEARCH },
 
@@ -28,6 +28,7 @@ export const getNavItems = (userId?: string): NavItem[] => [
       label: "Notifications",
       icon: Bell,
       path: PROTECTED_ROUTES.NOTIFICATIONS,
+      badge: unreadNotificationCount,
    },
    {
       label: "Create",

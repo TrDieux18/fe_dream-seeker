@@ -19,7 +19,7 @@ const ModalDeleteChatConfirm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { deleteChat } = useChat();
-  const { closeModal, getModalData, isModalOpen } = useModal();
+  const { closeModal, closeAllModals, getModalData, isModalOpen } = useModal();
   const { chat } = getModalData("ModalDeleteChatConfirm") as {
     chat: ChatType;
   };
@@ -29,6 +29,7 @@ const ModalDeleteChatConfirm = () => {
       setIsLoading(true);
       await deleteChat(chat._id);
       navigate(PROTECTED_ROUTES.CHAT);
+      closeAllModals();
     } catch (error) {
       console.error("Failed to delete chat:", error);
     } finally {

@@ -1,11 +1,9 @@
 import { memo, useState } from "react";
-import { useChat } from "@/hooks/use-chat";
 import { cn } from "@/lib/utils";
 import type { MessageType } from "@/types/chat.type";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { ReplyIcon, Heart, Check, X } from "lucide-react";
+import { ReplyIcon, Heart } from "lucide-react";
 import MessageActionsMenu from "./message-actions-menu";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -16,11 +14,8 @@ interface ChatBodyMessageProps {
 const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
   ({ message, onReply }) => {
     const { user } = useAuth();
-    const { editMessage } = useChat();
     const [showHeart, setShowHeart] = useState(false);
     const [lastTap, setLastTap] = useState(0);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editContent, setEditContent] = useState(message.content || "");
 
     const userId = user?._id || null;
     const isCurrentUser = message.sender?._id === userId;
@@ -40,26 +35,6 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
         setTimeout(() => setShowHeart(false), 1000);
       }
       setLastTap(now);
-    };
-
-    const handleEdit = (msg: MessageType) => {
-      setIsEditing(true);
-      setEditContent(msg.content || "");
-    };
-
-    const handleSaveEdit = async () => {
-      if (!editContent.trim()) return;
-      try {
-        await editMessage(message._id, editContent);
-        setIsEditing(false);
-      } catch (error) {
-        console.error("Failed to edit message:", error);
-      }
-    };
-
-    const handleCancelEdit = () => {
-      setIsEditing(false);
-      setEditContent(message.content || "");
     };
 
     const containerClass = cn(
@@ -135,43 +110,8 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
                 />
               )}
 
-              {isEditing ? (
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSaveEdit();
-                      } else if (e.key === "Escape") {
-                        handleCancelEdit();
-                      }
-                    }}
-                    className="flex-1 h-8 text-sm"
-                    autoFocus
-                  />
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-7 w-7"
-                    onClick={handleSaveEdit}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-7 w-7"
-                    onClick={handleCancelEdit}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                message.content && (
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                )
+              {message.content && (
+                <p className="whitespace-pre-wrap">{message.content}</p>
               )}
 
               {/* Heart animation on double-tap */}
@@ -205,7 +145,6 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
               <MessageActionsMenu
                 message={message}
                 onReply={onReply}
-                onEdit={handleEdit}
                 currentUserId={userId}
               />
             </div>

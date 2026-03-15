@@ -5,13 +5,15 @@ import { PROTECTED_ROUTES } from "@/routes/routes";
 import { useAuth } from "@/hooks/use-auth";
 import AvatarWithBadge from "./avatar-with-badge";
 import { isUserOnline } from "@/lib/helper";
+import { useSocket } from "@/hooks/use-socket";
 
 const MobileAsideBar = () => {
   const { user } = useAuth();
+  const { unreadNotificationCount, clearUnreadNotifications } = useSocket();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navItems = getNavItems(user?._id);
+  const navItems = getNavItems(user?._id, unreadNotificationCount);
   const isCurrentUserOnline = isUserOnline(user?._id);
 
   const isActive = (path: string) => {
@@ -22,6 +24,10 @@ const MobileAsideBar = () => {
   };
 
   const handleNavClick = (path: string) => {
+    if (path === PROTECTED_ROUTES.NOTIFICATIONS) {
+      clearUnreadNotifications();
+    }
+
     // On mobile, navigate directly to create post page
     if (path === "/create") {
       navigate(PROTECTED_ROUTES.CREATE_POST);

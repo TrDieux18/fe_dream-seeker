@@ -60,7 +60,7 @@ const ModalDirectChatSettings = () => {
         <DialogFooter>
           <Button
             variant="outline"
-            onClick={() => closeModal("ModalGroupSettings")}
+            onClick={() => closeModal("ModalDirectChatSettings")}
           >
             Close
           </Button>

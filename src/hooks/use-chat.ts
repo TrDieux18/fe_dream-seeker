@@ -15,6 +15,7 @@ interface ChatState {
       messages: MessageType[];
    } | null;
    readMessages: Record<string, string>;
+   listUnreadCount: number;
 
    isChatsLoading: boolean;
    isUsersLoading: boolean;
@@ -39,7 +40,6 @@ interface ChatState {
    deleteChat: (chatId: string) => Promise<void>;
    deleteMessage: (messageId: string, chatId: string) => Promise<void>;
    clearChatMessages: (chatId: string) => Promise<void>;
-   editMessage: (messageId: string, content: string) => Promise<void>;
 
    addNewChat: (chat: ChatType) => void;
    updateChatLastMessage: (chatId: string, lastMessage: MessageType) => void;
@@ -58,7 +58,7 @@ export const useChat = create<ChatState>()((set, get) => ({
    users: [],
    singleChat: null,
    readMessages: {},
-
+   listUnreadCount: 0,
    isChatsLoading: false,
    isUsersLoading: false,
    isCreatingChat: false,
@@ -458,16 +458,7 @@ export const useChat = create<ChatState>()((set, get) => ({
       }
    },
 
-   editMessage: async (messageId: string, content: string) => {
-      try {
-         const { data } = await API.put("/chat/message/edit", { messageId, content });
-         get().updateMessageInChat(data.editedMessage.chatId, data.editedMessage);
-         toast.success("Message edited successfully");
-      } catch (error: any) {
-         console.error("Failed to edit message:", error);
-         toast.error(error?.response?.data?.message || "Failed to edit message");
-      }
-   },
+
 
 
    updateChatInList: (updatedChat: ChatType) => {

@@ -11,7 +11,6 @@ import ProfileSkeleton from "@/components/profile/profile-skeleton";
 import { usePost } from "@/hooks/use-post";
 import { Bookmark, Grid3X3 } from "lucide-react";
 import EmptyState from "@/components/empty-state";
-import { Button } from "@/components/ui/button";
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();

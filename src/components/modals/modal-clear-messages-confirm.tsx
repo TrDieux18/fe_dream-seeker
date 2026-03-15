@@ -13,7 +13,7 @@ import { useChat } from "@/hooks/use-chat";
 import type { ChatType } from "@/types/chat.type";
 import { useState } from "react";
 const ModalClearMessagesConfirm = () => {
-  const { closeModal, getModalData, isModalOpen } = useModal();
+  const { closeModal, closeAllModals, getModalData, isModalOpen } = useModal();
   const [isloading, setIsLoading] = useState(false);
 
   const { clearChatMessages } = useChat();
@@ -27,6 +27,7 @@ const ModalClearMessagesConfirm = () => {
       setIsLoading(true);
       await clearChatMessages(chat._id);
       closeModal("ModalClearMessagesConfirm");
+      closeAllModals();
     } catch (error) {
       console.error("Failed to clear messages:", error);
     } finally {

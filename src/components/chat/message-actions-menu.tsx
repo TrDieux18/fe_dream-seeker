@@ -7,20 +7,19 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { MoreHorizontal, Reply, Trash2, Pencil } from "lucide-react";
+import { MoreHorizontal, Reply, Trash2 } from "lucide-react";
 import type React from "react";
 
 interface MessageActionsMenuProps {
   message: MessageType;
   onReply: (message: MessageType) => void;
-  onEdit: (message: MessageType) => void;
+
   currentUserId: string | null;
 }
 
 const MessageActionsMenu: React.FC<MessageActionsMenuProps> = ({
   message,
   onReply,
-  onEdit,
   currentUserId,
 }) => {
   const { deleteMessage } = useChat();
@@ -36,7 +35,6 @@ const MessageActionsMenu: React.FC<MessageActionsMenuProps> = ({
   };
 
   const isSender = message.sender?._id === currentUserId;
-  const canEdit = isSender && !message.image; // Can only edit text messages you sent
 
   return (
     <DropdownMenu>
@@ -54,12 +52,7 @@ const MessageActionsMenu: React.FC<MessageActionsMenuProps> = ({
           <Reply className="h-4 w-4 mr-2" />
           Reply
         </DropdownMenuItem>
-        {canEdit && (
-          <DropdownMenuItem onClick={() => onEdit(message)}>
-            <Pencil className="h-4 w-4 mr-2" />
-            Edit
-          </DropdownMenuItem>
-        )}
+
         {isSender && (
           <DropdownMenuItem
             onClick={handleDelete}

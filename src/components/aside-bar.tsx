@@ -17,13 +17,15 @@ import { getNavItems } from "@/lib/navigation";
 import { LogOut, ChevronDown, User } from "lucide-react";
 import { ModeTheme } from "./mode-theme";
 import { useAuth } from "@/hooks/use-auth";
+import { useSocket } from "@/hooks/use-socket";
 
 const AsideBar = () => {
   const { user, logout } = useAuth();
+  const { unreadNotificationCount, clearUnreadNotifications } = useSocket();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navItems = getNavItems(user?._id);
+  const navItems = getNavItems(user?._id, unreadNotificationCount);
   const isCurrentUserOnline = isUserOnline(user?._id);
 
   const isActive = (path: string) => {
@@ -34,6 +36,9 @@ const AsideBar = () => {
   };
 
   const handleNavClick = (path: string) => {
+    if (path === PROTECTED_ROUTES.NOTIFICATIONS) {
+      clearUnreadNotifications();
+    }
     navigate(path);
   };
 
@@ -111,7 +116,6 @@ const AsideBar = () => {
               );
             }
 
-            // Regular navigation button
             return (
               <button
                 key={item.label}
@@ -134,17 +138,19 @@ const AsideBar = () => {
                     )}
                   />
                 ) : (
-                  <Icon
-                    className={cn("size-7 shrink-0", active && "font-bold")}
-                    strokeWidth={active ? 2.5 : 2}
-                  />
+                  <div className="relative shrink-0">
+                    <Icon
+                      className={cn("size-7", active && "font-bold")}
+                      strokeWidth={active ? 2.5 : 2}
+                    />
+                    {item.label === "Notifications" && !!item.badge && (
+                      <span className="absolute right-0 -top-1 flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+                        {item.badge > 99 ? "99+" : item.badge}
+                      </span>
+                    )}
+                  </div>
                 )}
                 <span className="hidden lg:block text-base">{item.label}</span>
-                {item.badge && item.badge > 0 && (
-                  <span className="hidden lg:block ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                    {item.badge}
-                  </span>
-                )}
               </button>
             );
           })}

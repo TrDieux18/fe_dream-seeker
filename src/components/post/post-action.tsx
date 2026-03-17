@@ -40,25 +40,17 @@ const PostActions: React.FC<PostActionsProps> = ({
             isLiked={isLiked}
             onLike={() => onLike(post._id)}
             onUnlike={() => onUnlike(post._id)}
-            showLabel
           />
 
-          {/* Comment Button */}
-          <ActionPillButton label="Comment" onClick={onComment}>
+          <ActionPillButton onClick={onComment}>
             <MessageCircle className="h-5 w-5" strokeWidth={2} />
           </ActionPillButton>
 
-          {/* Share Button */}
-          <ActionPillButton
-            label="Share"
-            className="hidden sm:flex"
-            onClick={onShare}
-          >
+          <ActionPillButton className="hidden sm:flex" onClick={onShare}>
             <Send className="h-5 w-5" strokeWidth={2} />
           </ActionPillButton>
         </div>
 
-        {/* Right Actions */}
         <ActionPillButton active={isSaved} onClick={onSave} disabled={isSaving}>
           {isSaving ? (
             <span className="text-sm text-muted-foreground">

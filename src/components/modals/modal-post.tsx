@@ -6,30 +6,21 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import type { PostType } from "@/types/post.type";
-import {
-  Heart,
-  MessageCircle,
-  Send,
-  Bookmark,
-  Smile,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Smile, ChevronLeft, ChevronRight } from "lucide-react";
 import { Separator } from "../ui/separator";
 import AvatarWithBadge from "../avatar-with-badge";
 import { usePost } from "@/hooks/use-post";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
 import { isUserOnline } from "@/lib/helper";
+import PostActions from "@/components/post/post-action";
 
 const ModalPost = () => {
   const { isModalOpen, closeModal, getModalData } = useModal();
   const modalData = getModalData("ModalPost") as { post: PostType } | null;
   const post = modalData?.post;
 
-  const { user } = useAuth();
   const {
     singlePost,
     fetchComments,
@@ -38,10 +29,14 @@ const ModalPost = () => {
     createComment,
     isCommentsLoading,
     isSendingComment,
+    savePost,
+    savingPostIds,
+    savedPostIds,
   } = usePost();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [commentText, setCommentText] = useState("");
+  const commentInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (post?._id && isModalOpen("ModalPost")) {
@@ -49,33 +44,42 @@ const ModalPost = () => {
     }
   }, [post?._id, isModalOpen]);
 
+  useEffect(() => {
+    if (post?._id) {
+      setCurrentImageIndex(0);
+      setCommentText("");
+    }
+  }, [post?._id]);
+
   if (!post) return null;
 
-  const isLiked = user ? post.likes.includes(user._id) : false;
-  const comments = singlePost?.comments || [];
-  const hasMultipleImages = post.images.length > 1;
-
-  const handleLikeToggle = () => {
-    if (isLiked) {
-      unlikePost(post._id);
-    } else {
-      likePost(post._id);
-    }
-  };
+  const modalPost = singlePost?.post?._id === post._id ? singlePost.post : post;
+  const comments =
+    singlePost?.post?._id === post._id ? singlePost.comments : [];
+  const hasMultipleImages = modalPost.images.length > 1;
+  const isSaved = savedPostIds.includes(modalPost._id);
+  const isSaving = savingPostIds.includes(modalPost._id);
 
   const handleCommentSubmit = () => {
-    if (!commentText.trim() || isSendingComment) return;
-    createComment({ postId: post._id, content: commentText });
+    const trimmedComment = commentText.trim();
+    if (!trimmedComment || isSendingComment) return;
+
+    createComment({ postId: modalPost._id, content: trimmedComment });
     setCommentText("");
   };
 
+  const handleSaveToggle = () => {
+    if (isSaving) return;
+    savePost(modalPost._id);
+  };
+
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % post.images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % modalPost.images.length);
   };
 
   const prevImage = () => {
     setCurrentImageIndex(
-      (prev) => (prev - 1 + post.images.length) % post.images.length,
+      (prev) => (prev - 1 + modalPost.images.length) % modalPost.images.length,
     );
   };
 
@@ -101,7 +105,7 @@ const ModalPost = () => {
             {/* Left: Image Section */}
             <div className="relative w-[65%] h-full bg-black flex items-center justify-center shrink-0">
               <img
-                src={post.images[currentImageIndex]}
+                src={modalPost.images[currentImageIndex]}
                 alt={`Post image ${currentImageIndex + 1}`}
                 className="max-w-full max-h-full object-contain"
               />
@@ -117,7 +121,7 @@ const ModalPost = () => {
                       <ChevronLeft className="w-5 h-5 text-black" />
                     </button>
                   )}
-                  {currentImageIndex < post.images.length - 1 && (
+                  {currentImageIndex < modalPost.images.length - 1 && (
                     <button
                       onClick={nextImage}
                       className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
@@ -130,7 +134,7 @@ const ModalPost = () => {
 
               {hasMultipleImages && (
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
-                  {post.images.map((_, index) => (
+                  {modalPost.images.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
@@ -153,19 +157,19 @@ const ModalPost = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <AvatarWithBadge
-                      imageUrl={post.user?.avatar || ""}
-                      altText={post.user?.name}
+                      imageUrl={modalPost.user?.avatar || ""}
+                      altText={modalPost.user?.name}
                       size="md"
-                      isOnline={isUserOnline(post.user?._id)}
+                      isOnline={isUserOnline(modalPost.user?._id)}
                       badgeType="status-dot"
                     />
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm">
-                        {post.user?.name}
+                        {modalPost.user?.name}
                       </span>
-                      {post.location && (
+                      {modalPost.location && (
                         <span className="text-xs text-muted-foreground">
-                          {post.location}
+                          {modalPost.location}
                         </span>
                       )}
                     </div>
@@ -176,24 +180,24 @@ const ModalPost = () => {
               {/* Comments Section */}
               <div className="flex-1 overflow-y-auto p-4 min-h-0">
                 {/* Caption */}
-                {post.caption && (
+                {modalPost.caption && (
                   <div className="flex gap-3 mb-6">
                     <AvatarWithBadge
-                      imageUrl={post.user?.avatar || ""}
-                      altText={post.user?.name}
+                      imageUrl={modalPost.user?.avatar || ""}
+                      altText={modalPost.user?.name}
                       size="md"
-                      isOnline={isUserOnline(post.user?._id)}
+                      isOnline={isUserOnline(modalPost.user?._id)}
                       badgeType="status-dot"
                     />
                     <div className="flex-1">
                       <div className="flex items-baseline gap-2">
                         <span className="font-semibold text-sm">
-                          {post.user?.name}
+                          {modalPost.user?.name}
                         </span>
-                        <span className="text-sm">{post.caption}</span>
+                        <span className="text-sm">{modalPost.caption}</span>
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
-                        {formatDistanceToNow(new Date(post.createdAt), {
+                        {formatDistanceToNow(new Date(modalPost.createdAt), {
                           addSuffix: true,
                         })}
                       </div>
@@ -251,43 +255,28 @@ const ModalPost = () => {
               {/* Actions & Engagement */}
               <div className="border-t shrink-0">
                 {/* Action Buttons */}
-                <div className="flex items-center justify-between p-3">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={handleLikeToggle}
-                      className="hover:opacity-60 transition-opacity"
-                    >
-                      <Heart
-                        className={cn(
-                          "w-7 h-7",
-                          isLiked && "fill-red-500 text-red-500",
-                        )}
-                        strokeWidth={2}
-                      />
-                    </button>
-                    <button className="hover:opacity-60 transition-opacity">
-                      <MessageCircle className="w-7 h-7" strokeWidth={2} />
-                    </button>
-                    <button className="hover:opacity-60 transition-opacity">
-                      <Send className="w-7 h-7" strokeWidth={2} />
-                    </button>
-                  </div>
-                  <button className="hover:opacity-60 transition-opacity">
-                    <Bookmark className="w-7 h-7" strokeWidth={2} />
-                  </button>
-                </div>
+                <PostActions
+                  post={modalPost}
+                  onLike={likePost}
+                  onUnlike={unlikePost}
+                  onComment={() => commentInputRef.current?.focus()}
+                  onSave={handleSaveToggle}
+                  isSaving={isSaving}
+                  isSaved={isSaved}
+                />
 
                 {/* Likes Count */}
                 <div className="px-4 pb-2">
                   <span className="font-semibold text-sm">
-                    {post.likesCount} {post.likesCount === 1 ? "like" : "likes"}
+                    {modalPost.likesCount}{" "}
+                    {modalPost.likesCount === 1 ? "like" : "likes"}
                   </span>
                 </div>
 
                 {/* Date */}
                 <div className="px-4 pb-3">
                   <span className="text-xs text-muted-foreground uppercase">
-                    {formatDistanceToNow(new Date(post.createdAt), {
+                    {formatDistanceToNow(new Date(modalPost.createdAt), {
                       addSuffix: true,
                     })}
                   </span>
@@ -299,11 +288,13 @@ const ModalPost = () => {
                 <div className="p-3 flex items-center gap-3">
                   <button
                     type="button"
+                    onClick={() => commentInputRef.current?.focus()}
                     className="hover:opacity-60 transition-opacity"
                   >
                     <Smile className="w-6 h-6" />
                   </button>
                   <input
+                    ref={commentInputRef}
                     type="text"
                     placeholder="Add a comment..."
                     value={commentText}

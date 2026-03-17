@@ -7,6 +7,7 @@ import SearchPage from "@/pages/search";
 import NotificationsPage from "@/pages/notifications";
 import CreatePage from "@/pages/create";
 import ProfilePage from "@/pages/profile";
+import CompleteProfile from "@/pages/profile/complete-profile";
 
 export const AUTH_ROUTES = {
   SIGN_IN: "/",
@@ -22,6 +23,7 @@ export const PROTECTED_ROUTES = {
   CREATE_POST: "/create/post",
   PROFILE: "/profile",
   PROFILE_BY_ID: "/profile/:userId",
+  COMPLETE_PROFILE: "/complete-profile",
 };
 
 export const authRoutesPaths = [
@@ -32,6 +34,13 @@ export const authRoutesPaths = [
   {
     path: AUTH_ROUTES.SIGN_UP,
     element: <SignUpPage />,
+  },
+];
+
+export const onboardingProtectedRoutesPaths = [
+  {
+    path: PROTECTED_ROUTES.COMPLETE_PROFILE,
+    element: <CompleteProfile />,
   },
 ];
 export const protectedRoutesPaths = [

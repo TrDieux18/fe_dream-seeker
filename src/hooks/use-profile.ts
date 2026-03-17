@@ -3,6 +3,7 @@ import type { UserProfile, UpdateProfilePayload } from "@/types/profile.type";
 import type { PostType } from "@/types/post.type";
 import { toast } from "sonner";
 import { create } from "zustand";
+import { useAuth } from "./use-auth";
 
 interface ProfileState {
    profile: UserProfile | null;
@@ -88,6 +89,7 @@ export const useProfile = create<ProfileState>()((set, get) => ({
       try {
          const response = await API.put("/user/profile", data);
 
+         useAuth.setState({ user: response.data.user });
 
          set((state) => ({
             profile: state.profile

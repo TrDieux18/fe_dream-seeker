@@ -1,6 +1,5 @@
 import type React from "react";
 import type { PostType } from "@/types/post.type";
-import { formatDistanceToNow } from "date-fns";
 import MetaPill from "../ui/meta-pill";
 
 interface PostEngagementProps {
@@ -12,10 +11,6 @@ const PostEngagement: React.FC<PostEngagementProps> = ({
   post,
   onViewComments,
 }) => {
-  const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
-    addSuffix: true,
-  });
-
   return (
     <div className="px-5 py-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -27,12 +22,6 @@ const PostEngagement: React.FC<PostEngagementProps> = ({
           {post.commentsCount.toLocaleString()}{" "}
           {post.commentsCount === 1 ? "comment" : "comments"}
         </MetaPill>
-        <MetaPill
-          className="text-xs uppercase tracking-[0.16em] text-muted-foreground/80"
-          variant="subtle"
-        >
-          {timeAgo}
-        </MetaPill>
       </div>
 
       {post.caption && (
@@ -42,15 +31,6 @@ const PostEngagement: React.FC<PostEngagementProps> = ({
           </span>
           <span>{post.caption}</span>
         </div>
-      )}
-
-      {post.commentsCount > 0 && (
-        <button
-          className="mt-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          onClick={onViewComments}
-        >
-          Open discussion
-        </button>
       )}
     </div>
   );

@@ -18,7 +18,7 @@ interface PostLikeButtonProps {
   onLike: () => void;
   onUnlike: () => void;
   className?: string;
-  showLabel?: boolean;
+
 }
 
 const PostLikeButton: React.FC<PostLikeButtonProps> = ({
@@ -26,7 +26,7 @@ const PostLikeButton: React.FC<PostLikeButtonProps> = ({
   onLike,
   onUnlike,
   className,
-  showLabel = false,
+ 
 }) => {
   const [floatingHearts, setFloatingHearts] = useState<FloatingHeart[]>([]);
   const [isHeartAnimating, setIsHeartAnimating] = useState(false);
@@ -81,7 +81,7 @@ const PostLikeButton: React.FC<PostLikeButtonProps> = ({
   return (
     <div className={`relative ${className || ""}`}>
       <ActionPillButton
-        label={showLabel ? (isLiked ? "Liked" : "Like") : undefined}
+       
         active={isLiked}
         className="active:scale-90"
         onClick={handleLikeClick}

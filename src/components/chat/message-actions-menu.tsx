@@ -1,4 +1,4 @@
-import { useChat } from "@/hooks/use-chat";
+import { useModal } from "@/hooks/use-modal";
 import type { MessageType } from "@/types/chat.type";
 import {
   DropdownMenu,
@@ -22,19 +22,13 @@ const MessageActionsMenu: React.FC<MessageActionsMenuProps> = ({
   onReply,
   currentUserId,
 }) => {
-  const { deleteMessage } = useChat();
-
-  const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this message?")) {
-      try {
-        await deleteMessage(message._id, message.chatId);
-      } catch (error) {
-        console.error("Failed to delete message:", error);
-      }
-    }
-  };
+  const { openModal } = useModal();
 
   const isSender = message.sender?._id === currentUserId;
+
+  const handleDelete = () => {
+    openModal("ModalDeleteMessageConfirm", { message });
+  };
 
   return (
     <DropdownMenu>

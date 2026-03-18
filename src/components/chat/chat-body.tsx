@@ -20,7 +20,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
     addNewMessage,
     removeMessageFromChat,
     clearMessagesInChat,
-    updateMessageInChat,
     markChatAsRead,
   } = useChat();
 
@@ -58,24 +57,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
   useEffect(() => {
     if (!socket || !chatId) return;
 
-    const handleMessageEdited = (data: {
-      message: MessageType;
-      chatId: string;
-    }) => {
-      if (data.chatId === chatId) {
-        updateMessageInChat(chatId, data.message);
-      }
-    };
-    socket.on("message:edited", handleMessageEdited);
-
-    return () => {
-      socket.off("message:edited", handleMessageEdited);
-    };
-  }, [socket, chatId, updateMessageInChat]);
-
-  useEffect(() => {
-    if (!socket || !chatId) return;
-
     const handleMessagesCleared = (data: { chatId: string }) => {
       if (data.chatId === chatId) {
         clearMessagesInChat(chatId);
@@ -88,7 +69,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
     };
   }, [socket, chatId, clearMessagesInChat]);
 
-  // Auto mark chat as read when new messages arrive (only for messages from others)
   useEffect(() => {
     if (!messages.length || !user?._id) return;
 
@@ -110,6 +90,8 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
           {messages.map((message, index) => {
             const previousMessage = index > 0 ? messages[index - 1] : null;
             const showTimestamp = shouldShowTimestamp(message, previousMessage);
+            const hasSameSenderAsPrevious =
+              previousMessage?.sender?._id === message.sender?._id;
 
             return (
               <div key={message._id}>
@@ -120,7 +102,11 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
                     </span>
                   </div>
                 )}
-                <ChatBodyMessage message={message} onReply={onReply} />
+                <ChatBodyMessage
+                  message={message}
+                  onReply={onReply}
+                  showAvatar={!hasSameSenderAsPrevious}
+                />
               </div>
             );
           })}

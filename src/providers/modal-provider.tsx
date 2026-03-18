@@ -1,5 +1,6 @@
 import ModalClearMessagesConfirm from "@/components/modals/modal-clear-messages-confirm";
 import ModalDeleteChatConfirm from "@/components/modals/modal-delete-chat-confirm";
+import ModalDeleteMessageConfirm from "@/components/modals/modal-delete-message-confirm";
 import ModalDirectChatSettings from "@/components/modals/modal-direct-chat-settings";
 import ModalEditProfile from "@/components/modals/modal-edit-profile";
 import ModalFollowList from "@/components/modals/modal-follow-list";
@@ -31,6 +32,9 @@ const ModalProvider = () => {
 
       {isModalOpen("ModalClearMessagesConfirm") && (
         <ModalClearMessagesConfirm />
+      )}
+      {isModalOpen("ModalDeleteMessageConfirm") && (
+        <ModalDeleteMessageConfirm />
       )}
       {isModalOpen("ModalDeleteChatConfirm") && <ModalDeleteChatConfirm />}
     </>

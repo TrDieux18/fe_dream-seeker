@@ -103,7 +103,7 @@ export const ChatList = () => {
 
     const handleChatUpdated = (data: {
       chatId: string;
-      lastMessage: MessageType;
+      lastMessage: MessageType | null;
     }) => {
       updateChatLastMessage(data.chatId, data.lastMessage);
     };

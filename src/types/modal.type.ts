@@ -3,6 +3,7 @@ export type ModalType =
    | "ModalGroupSettings"
    | "ModalEditProfile"
    | "ModalClearMessagesConfirm"
+   | "ModalDeleteMessageConfirm"
    | "ModalDeleteChatConfirm"
    | "ModalPost"
    | "ModalUserPreview"

@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,7 +45,7 @@ const SignInPage = () => {
   };
   return (
     <div className="flex  min-h-svh items-center justify-center ">
-      <Card className="w-full max-w-md mx-4">
+      <Card className="w-full max-w-md mx-4 border-white/40 bg-white/88 backdrop-blur-xl shadow-2xl shadow-black/25">
         <CardHeader>
           <CardTitle className="uppercase">Sign In</CardTitle>
           <CardDescription>
@@ -81,9 +82,8 @@ const SignInPage = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         disabled={isLoggingIn}
-                        type="password"
                         placeholder="********"
                         {...field}
                       />

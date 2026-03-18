@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -54,7 +55,7 @@ const SignUpPage = () => {
   };
   return (
     <div className="flex  min-h-svh items-center justify-center ">
-      <Card className="w-full max-w-md mx-4">
+      <Card className="w-full max-w-md mx-4 border-white/40 bg-white/88 backdrop-blur-xl shadow-2xl shadow-black/25">
         <CardHeader>
           <CardTitle className="uppercase"> Create an account</CardTitle>
           <CardDescription>
@@ -108,9 +109,8 @@ const SignUpPage = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         disabled={isSigningUp}
-                        type="password"
                         placeholder="********"
                         {...field}
                       />
@@ -127,9 +127,8 @@ const SignUpPage = () => {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input
+                      <PasswordInput
                         disabled={isSigningUp}
-                        type="password"
                         placeholder="********"
                         {...field}
                       />

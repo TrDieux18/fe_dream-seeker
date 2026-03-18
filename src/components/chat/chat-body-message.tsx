@@ -3,16 +3,17 @@ import { cn } from "@/lib/utils";
 import type { MessageType } from "@/types/chat.type";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Button } from "../ui/button";
-import { ReplyIcon, Heart } from "lucide-react";
+import { ReplyIcon, Heart, Image as ImageIcon } from "lucide-react";
 import MessageActionsMenu from "./message-actions-menu";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ChatBodyMessageProps {
   message: MessageType;
   onReply: (message: MessageType) => void;
+  showAvatar?: boolean;
 }
 const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
-  ({ message, onReply }) => {
+  ({ message, onReply, showAvatar = true }) => {
     const { user } = useAuth();
     const [showHeart, setShowHeart] = useState(false);
     const [lastTap, setLastTap] = useState(0);
@@ -57,15 +58,17 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
     );
 
     const replyBoxClass = cn(
-      "mb-2 px-3 py-2 text-[13px] rounded-2xl border-l-2 !text-left",
+      "mb-1.5 w-full rounded-lg px-2.5 py-1.5 text-[12px] leading-4 !text-left",
       isCurrentUser
-        ? "bg-primary/30 border-l-primary-foreground/50"
-        : "bg-accent/60 border-l-muted-foreground",
+        ? "border-l-2 border-l-primary-foreground/70 bg-primary-foreground/12 text-primary-foreground"
+        : "border-l-2 border-l-primary/70 bg-foreground/5 text-foreground",
     );
+
+    const shouldShowAvatar = !isCurrentUser && showAvatar;
 
     return (
       <div className={containerClass}>
-        {!isCurrentUser && (
+        {shouldShowAvatar && (
           <div className="shrink-0 flex items-start pt-1">
             <AvatarWithBadge
               name={message.sender?.name || "No name"}
@@ -73,6 +76,10 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
               size="w-9 h-9"
             />
           </div>
+        )}
+
+        {!isCurrentUser && !shouldShowAvatar && (
+          <div className="w-9 shrink-0" />
         )}
 
         <div className={contentWrapperClass}>
@@ -92,13 +99,20 @@ const ChatBodyMessage: React.FC<ChatBodyMessageProps> = memo(
               {/* ReplyToBox */}
               {message.replyTo && (
                 <div className={replyBoxClass}>
-                  <h5 className="font-semibold text-[12px] mb-0.5">
-                    {replySendername}
-                  </h5>
-                  <p className="font-normal opacity-70 text-[13px] truncate max-w-xs">
-                    {message?.replyTo?.content ||
-                      (message?.replyTo?.image ? "Photo" : "")}
-                  </p>
+                  <div className="mb-0.5 flex items-center gap-1 text-[11px] font-semibold opacity-90">
+                    <span>{replySendername}</span>
+                  </div>
+
+                  {message?.replyTo?.image ? (
+                    <div className="flex items-center gap-1.5 text-[12px] opacity-85">
+                      <ImageIcon size={12} />
+                      <span>Photo</span>
+                    </div>
+                  ) : (
+                    <p className="max-w-xs truncate text-[12px] font-normal opacity-85">
+                      {message?.replyTo?.content}
+                    </p>
+                  )}
                 </div>
               )}
 

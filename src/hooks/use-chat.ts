@@ -42,7 +42,7 @@ interface ChatState {
    clearChatMessages: (chatId: string) => Promise<void>;
 
    addNewChat: (chat: ChatType) => void;
-   updateChatLastMessage: (chatId: string, lastMessage: MessageType) => void;
+   updateChatLastMessage: (chatId: string, lastMessage: MessageType | null) => void;
    addNewMessage: (chatId: string, message: MessageType) => void;
    markChatAsRead: (chatId: string, messageId: string) => void;
    isMessageUnread: (chatId: string, message: MessageType | null, currentUserId: string | null) => boolean;
@@ -50,7 +50,6 @@ interface ChatState {
    removeChatFromList: (chatId: string) => void;
    removeMessageFromChat: (chatId: string, messageId: string) => void;
    clearMessagesInChat: (chatId: string) => void;
-   updateMessageInChat: (chatId: string, updatedMessage: MessageType) => void;
 }
 
 export const useChat = create<ChatState>()((set, get) => ({
@@ -303,7 +302,7 @@ export const useChat = create<ChatState>()((set, get) => ({
       })
    },
 
-   updateChatLastMessage: (chatId: string, lastMessage: MessageType) => {
+   updateChatLastMessage: (chatId: string, lastMessage: MessageType | null) => {
       set((state) => {
          const chat = state.chats.find((c) => c._id === chatId);
 
@@ -432,8 +431,8 @@ export const useChat = create<ChatState>()((set, get) => ({
          get().removeMessageFromChat(chatId, messageId);
 
          // Update lastMessage in chat list if backend returns new last message
-         if (data.newLastMessage !== undefined) {
-            get().updateChatLastMessage(chatId, data.newLastMessage);
+         if (data.wasLastMessageDeleted) {
+            get().updateChatLastMessage(chatId, data.newLastMessage ?? null);
          }
 
          toast.success("Message deleted successfully");
@@ -449,7 +448,7 @@ export const useChat = create<ChatState>()((set, get) => ({
          get().clearMessagesInChat(chatId);
 
          // Update lastMessage to null in chat list
-         get().updateChatLastMessage(chatId, null as any);
+         get().updateChatLastMessage(chatId, null);
 
          toast.success("Chat messages cleared successfully");
       } catch (error: any) {
@@ -506,21 +505,5 @@ export const useChat = create<ChatState>()((set, get) => ({
          };
       });
    },
-
-   updateMessageInChat: (chatId: string, updatedMessage: MessageType) => {
-      set((state) => {
-         if (!state.singleChat || state.singleChat.chat._id !== chatId) {
-            return state;
-         }
-         return {
-            singleChat: {
-               ...state.singleChat,
-               messages: state.singleChat.messages.map((msg) =>
-                  msg._id === updatedMessage._id ? updatedMessage : msg
-               )
-            }
-         };
-      });
-   }
 
 }));

@@ -45,7 +45,7 @@ const SignInPage = () => {
   };
   return (
     <div className="flex  min-h-svh items-center justify-center ">
-      <Card className="w-full max-w-md mx-4 border-white/40 bg-white/88 backdrop-blur-xl shadow-2xl shadow-black/25">
+      <Card className="w-full max-w-md mx-4 border-border/60 bg-card/88 text-card-foreground backdrop-blur-xl shadow-2xl shadow-black/25 dark:bg-card/82">
         <CardHeader>
           <CardTitle className="uppercase">Sign In</CardTitle>
           <CardDescription>

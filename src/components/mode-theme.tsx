@@ -36,15 +36,15 @@ export function ModeTheme() {
         >
           <DropdownMenuRadioItem value="light">
             <Sun className="mr-2 size-4" />
-            Sáng
+            Light
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="dark">
             <Moon className="mr-2 size-4" />
-            Tối
+            Dark
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="system">
             <Monitor className="mr-2 size-4" />
-            Hệ thống
+            System
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuSubContent>

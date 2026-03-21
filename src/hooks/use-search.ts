@@ -10,9 +10,6 @@ interface SearchState {
    error: string | null;
 
    setQuery: (query: string) => void;
-   setResults: (results: UserType[]) => void;
-   setLoading: (isLoading: boolean) => void;
-   setError: (error: string | null) => void;
 
    searchUsers: (query: string) => Promise<void>;
 }
@@ -24,9 +21,6 @@ export const useSearch = create<SearchState>()((set) => ({
    error: null,
 
    setQuery: (query: string) => set({ query }),
-   setResults: (results: UserType[]) => set({ results }),
-   setLoading: (isLoading: boolean) => set({ isLoading }),
-   setError: (error: string | null) => set({ error }),
 
    searchUsers: async (query: string) => {
       set({ isLoading: true, error: null });

@@ -11,6 +11,7 @@ import ChatListSkeleton from "./chat-list-skeleton";
 
 export const ChatList = () => {
   const navigate = useNavigate();
+  
   const {
     fetchChats,
     fetchMoreChats,

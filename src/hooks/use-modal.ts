@@ -17,7 +17,6 @@ interface ModalState {
    closeAllModals: () => void;
    isModalOpen: (type: ModalType) => boolean;
    getModalData: (type: ModalType) => ModalData | undefined;
-   getModalIndex: (type: ModalType) => number;
    clearModalData: (type: ModalType) => void;
 }
 
@@ -45,12 +44,10 @@ export const useModal = create<ModalState>((set, get) => ({
 
    getModalData: type => get().modals.find(modal => modal.type === type)?.data,
 
-   getModalIndex: type => get().modals.findIndex(modal => modal.type === type),
-
 
    clearModalData: (type: ModalType) => {
       set((state) => ({
-         modals: state.modals.map(modal => 
+         modals: state.modals.map(modal =>
             modal.type === type ? { ...modal, data: undefined } : modal
          )
       }))

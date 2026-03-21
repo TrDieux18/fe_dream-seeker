@@ -6,12 +6,7 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
-import {
-  Image as ImageIcon,
-  X,
-  MapPin,
-  ImagePlus,
-} from "lucide-react";
+import { Image as ImageIcon, X, MapPin, ImagePlus } from "lucide-react";
 import { Card } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { Spinner } from "../ui/spinner";
@@ -28,7 +23,6 @@ import EmojiPickerButton from "../ui/emoji-picker-button";
 import { usePost } from "@/hooks/use-post";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import type { PostType } from "@/types/post.type";
 
 // Validation Schema
 const postSchema = z.object({
@@ -49,13 +43,12 @@ const postSchema = z.object({
 type PostFormValues = z.infer<typeof postSchema>;
 
 interface CreatePostProps {
-  post?: PostType; // For edit mode
   onSuccess?: () => void;
 }
 
-const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
+const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
   const { createPost, isCreatingPost } = usePost();
-  const [images, setImages] = useState<string[]>(post?.images || []);
+  const [images, setImages] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const captionTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -64,9 +57,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      caption: post?.caption || "",
-      location: post?.location || "",
-      images: post?.images || [],
+      caption: "",
+      location: "",
+      images: [],
     },
   });
 
@@ -210,8 +203,6 @@ const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
     }
   };
 
-  const isEditMode = !!post;
-
   return (
     <Card className="w-full max-w-150 mx-auto mb-8 overflow-hidden border-border/40 shadow-sm">
       <div className="p-6">
@@ -219,7 +210,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
-              {isEditMode ? "Edit Post" : "Create New Post"}
+              Create New Post
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
               Share your moments with the community
@@ -247,7 +238,6 @@ const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
                         {...field}
                         ref={(e) => {
                           field.ref(e);
-                          // @ts-ignore
                           captionTextareaRef.current = e;
                         }}
                         placeholder="Write a caption for your post..."
@@ -421,7 +411,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ post, onSuccess }) => {
                     Posting...
                   </>
                 ) : (
-                  <>{isEditMode ? "Update Post" : "Create Post"}</>
+                  <>Create Post</>
                 )}
               </Button>
             </div>

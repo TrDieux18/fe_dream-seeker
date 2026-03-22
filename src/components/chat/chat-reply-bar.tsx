@@ -19,7 +19,7 @@ const ChatReplyBar: React.FC<ChatReplyBarProps> = ({
     replyTo.sender?._id === currentUserId ? "You" : replyTo.sender?.name;
 
   return (
-    <div className="absolute bottom-20 inset-x-0 px-6 animate-in slide-in-from-bottom-2">
+    <div className="absolute inset-x-0 bottom-19 px-3 sm:px-4 md:px-6 animate-in slide-in-from-bottom-2">
       <div className="mx-auto max-w-4xl border-x border-t border-border/50 bg-background/96 backdrop-blur-sm rounded-t-2xl">
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="min-w-0 flex-1 border-l-2 border-l-primary pl-2.5">

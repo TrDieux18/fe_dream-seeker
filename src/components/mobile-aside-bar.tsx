@@ -15,6 +15,9 @@ const MobileAsideBar = () => {
 
   const navItems = getNavItems(user?._id, unreadNotificationCount);
   const isCurrentUserOnline = isUserOnline(user?._id);
+  const isChatDetailRoute = location.pathname.startsWith(
+    PROTECTED_ROUTES.CHAT + "/",
+  );
 
   const isActive = (path: string) => {
     if (path === PROTECTED_ROUTES.FEED) {
@@ -36,11 +39,15 @@ const MobileAsideBar = () => {
     navigate(path);
   };
 
+  if (isChatDetailRoute) {
+    return null;
+  }
+
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 
-             border-t border-border/50 bg-background
-             flex items-center justify-around py-2 px-2"
+             border-t border-border/50 bg-background/95 backdrop-blur
+             flex items-center justify-around px-2 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
     >
       {[navItems[0], navItems[1], navItems[4], navItems[5]].map((item) => {
         const Icon = item.icon;

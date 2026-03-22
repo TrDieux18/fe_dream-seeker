@@ -6,7 +6,7 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import type { PostType } from "@/types/post.type";
-import { Smile, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Separator } from "../ui/separator";
 import AvatarWithBadge from "../avatar-with-badge";
 import { usePost } from "@/hooks/use-post";
@@ -15,6 +15,8 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { isUserOnline } from "@/lib/helper";
 import PostActions from "@/components/post/post-action";
+import { toast } from "sonner";
+import EmojiPickerButton from "../ui/emoji-picker-button";
 
 const ModalPost = () => {
   const { isModalOpen, closeModal, getModalData } = useModal();
@@ -68,6 +70,10 @@ const ModalPost = () => {
     setCommentText("");
   };
 
+  const handleCommentEmojiSelect = (emoji: string) => {
+    setCommentText((prev) => prev + emoji);
+  };
+
   const handleSaveToggle = () => {
     if (isSaving) return;
     savePost(modalPost._id);
@@ -87,7 +93,11 @@ const ModalPost = () => {
     <>
       <Dialog
         open={isModalOpen("ModalPost")}
-        onOpenChange={() => closeModal("ModalPost")}
+        onOpenChange={(open) => {
+          if (!open) {
+            closeModal("ModalPost");
+          }
+        }}
       >
         <DialogContent
           className="max-w-[90vw] w-[90vw] max-h-[90vh] h-[90vh] p-0 gap-0 bg-background overflow-hidden"
@@ -103,7 +113,7 @@ const ModalPost = () => {
 
           <div className="flex h-full w-full overflow-hidden">
             {/* Left: Image Section */}
-            <div className="relative w-[65%] h-full bg-black flex items-center justify-center shrink-0">
+            <div className="relative z-10 w-[65%] h-full bg-black flex items-center justify-center shrink-0">
               <img
                 src={modalPost.images[currentImageIndex]}
                 alt={`Post image ${currentImageIndex + 1}`}
@@ -115,16 +125,20 @@ const ModalPost = () => {
                 <>
                   {currentImageIndex > 0 && (
                     <button
+                      type="button"
+                      aria-label="Previous image"
                       onClick={prevImage}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
+                      className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg transition-all hover:bg-white"
                     >
                       <ChevronLeft className="w-5 h-5 text-black" />
                     </button>
                   )}
                   {currentImageIndex < modalPost.images.length - 1 && (
                     <button
+                      type="button"
+                      aria-label="Next image"
                       onClick={nextImage}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
+                      className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg transition-all hover:bg-white"
                     >
                       <ChevronRight className="w-5 h-5 text-black" />
                     </button>
@@ -133,9 +147,11 @@ const ModalPost = () => {
               )}
 
               {hasMultipleImages && (
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
+                <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-1.5">
                   {modalPost.images.map((_, index) => (
                     <button
+                      type="button"
+                      aria-label={`Go to image ${index + 1}`}
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
                       className={cn(
@@ -151,7 +167,7 @@ const ModalPost = () => {
             </div>
 
             {/* Right: Content Section */}
-            <div className="flex-1 flex flex-col bg-background border-l overflow-hidden max-w-[35%]">
+            <div className="relative z-30 flex-1 flex flex-col bg-background border-l overflow-visible max-w-[35%]">
               {/* Header */}
               <div className="p-4 border-b shrink-0">
                 <div className="flex items-center justify-between">
@@ -260,6 +276,7 @@ const ModalPost = () => {
                   onLike={likePost}
                   onUnlike={unlikePost}
                   onComment={() => commentInputRef.current?.focus()}
+                  onShare={() => toast.info("Share feature is coming soon")}
                   onSave={handleSaveToggle}
                   isSaving={isSaving}
                   isSaved={isSaved}
@@ -285,14 +302,13 @@ const ModalPost = () => {
                 <Separator />
 
                 {/* Add Comment Input */}
-                <div className="p-3 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => commentInputRef.current?.focus()}
-                    className="hover:opacity-60 transition-opacity"
-                  >
-                    <Smile className="w-6 h-6" />
-                  </button>
+                <div className="relative p-3 flex items-center gap-3">
+                  <EmojiPickerButton
+                    onEmojiSelect={handleCommentEmojiSelect}
+                    usePortal={false}
+                    pickerWidth={300}
+                    pickerHeight={360}
+                  />
                   <input
                     ref={commentInputRef}
                     type="text"
@@ -309,6 +325,7 @@ const ModalPost = () => {
                     disabled={isSendingComment}
                   />
                   <button
+                    type="button"
                     onClick={handleCommentSubmit}
                     disabled={!commentText.trim() || isSendingComment}
                     className={cn(

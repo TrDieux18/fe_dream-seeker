@@ -9,7 +9,9 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   return (
     <div className="h-full">
       <AsideBar />
-      <main className="md:pl-16 lg:pl-60 pb-16 md:pb-0 h-full">{children}</main>
+      <main className="h-full pb-[calc(--spacing(16)+env(safe-area-inset-bottom))] md:pb-0 md:pl-16 lg:pl-60">
+        {children}
+      </main>
     </div>
   );
 };

@@ -8,12 +8,11 @@ const AppLayout = () => {
   const chatId = useChatId();
   const location = useLocation();
 
-  
   const isChatRoute = location.pathname.startsWith("/chat");
 
   return (
     <AppWrapper>
-      <div className="h-full">
+      <div className="relative h-full min-h-svh">
         {/* Show ChatList only on chat routes */}
         {isChatRoute && (
           <div className={cn(chatId ? "hidden lg:block" : "block")}>
@@ -22,8 +21,8 @@ const AppLayout = () => {
         )}
         <div
           className={cn(
-            "flex-1 h-full",
-            isChatRoute && "lg:pl-95.75",
+            "flex-1 h-full min-h-svh",
+            isChatRoute && "lg:ml-95.75",
             isChatRoute && !chatId && "hidden lg:block",
             isChatRoute && chatId && "block",
           )}

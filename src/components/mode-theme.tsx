@@ -16,7 +16,11 @@ const themeConfig = {
 
 export function ModeTheme() {
   const { theme, setTheme } = useTheme();
-  const ThemeIcon = themeConfig[theme].icon;
+  const selectedTheme =
+    theme === "light" || theme === "dark" || theme === "system"
+      ? theme
+      : "system";
+  const ThemeIcon = themeConfig[selectedTheme].icon;
 
   return (
     <DropdownMenuSub>
@@ -24,12 +28,12 @@ export function ModeTheme() {
         <ThemeIcon className="mr-2 size-4" />
         <span>Theme</span>
         <span className="ml-auto text-xs text-muted-foreground">
-          {themeConfig[theme].label}
+          {themeConfig[selectedTheme].label}
         </span>
       </DropdownMenuSubTrigger>
       <DropdownMenuSubContent>
         <DropdownMenuRadioGroup
-          value={theme}
+          value={selectedTheme}
           onValueChange={(value) =>
             setTheme(value as "light" | "dark" | "system")
           }

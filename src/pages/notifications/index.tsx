@@ -37,9 +37,9 @@ const NotificationsPage = () => {
 
   return (
     <FeedLayout showRightSidebar={false}>
-      <div className="mx-auto w-full max-w-4xl px-4 pb-24 pt-8 md:px-8">
+      <div className="mx-auto w-full max-w-4xl px-3 pb-24 pt-6 sm:px-4 sm:pt-8 md:px-8">
         <div className="overflow-hidden rounded-3xl border border-border/60 bg-background shadow-sm">
-          <div className="relative border-b border-border/50  px-6 py-6">
+          <div className="relative border-b border-border/50 px-4 py-5 sm:px-6 sm:py-6">
             <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-orange-200/20 blur-2xl" />
             <div className="absolute -bottom-10 left-1/2 h-20 w-20 -translate-x-1/2 rounded-full bg-cyan-200/20 blur-xl" />
 
@@ -61,7 +61,7 @@ const NotificationsPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 border-b border-border/50 px-6 py-3">
+          <div className="flex items-center gap-2 border-b border-border/50 px-4 py-3 sm:px-6">
             <button
               onClick={() => setActiveTab("all")}
               className={cn(
@@ -87,7 +87,7 @@ const NotificationsPage = () => {
           </div>
 
           {isNotificationsLoading ? (
-            <div className="px-6 py-16 text-center text-sm text-muted-foreground">
+            <div className="px-4 py-16 text-center text-sm text-muted-foreground sm:px-6">
               Loading notifications...
             </div>
           ) : visibleNotifications.length === 0 ? (

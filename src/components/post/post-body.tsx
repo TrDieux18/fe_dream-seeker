@@ -50,7 +50,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
   const isSaved = savedPostIds.includes(post._id);
 
   return (
-    <Card className="mx-auto mb-6 w-full max-w-117.5 overflow-hidden rounded-[32px] border border-border/60 bg-card/95 shadow-[0_24px_70px_-48px_rgba(15,23,42,0.45)] backdrop-blur">
+    <Card className="mx-auto mb-6 w-full max-w-117.5 overflow-hidden rounded-3xl border border-border/60 bg-card/95 shadow-[0_24px_70px_-48px_rgba(15,23,42,0.45)] backdrop-blur sm:rounded-[32px]">
       <PostHeader post={post} onDelete={handleDelete} />
 
       <PostMedia images={post.images} onDoubleTap={handleDoubleTapLike} />

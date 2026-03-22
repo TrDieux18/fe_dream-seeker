@@ -43,7 +43,7 @@ const SingleChatPage = () => {
 
   if (isSingleChatLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-svh flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-y-4">
           <Skeleton className="h-30 w-30 rounded-full" />
           <Skeleton className="h-10 w-48" />
@@ -54,14 +54,14 @@ const SingleChatPage = () => {
 
   if (!chat) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-svh flex items-center justify-center">
         <p className="text-lg">Chat not found</p>
       </div>
     );
   }
   return (
     <div className="h-full">
-      <div className="relative h-svh flex flex-col overflow-hidden">
+      <div className="relative flex h-svh min-h-svh flex-col overflow-hidden">
         <ChatHeader chat={chat} currentUserId={currentUserId} />
 
         {messages.length === 0 ? (

@@ -11,7 +11,7 @@ import ChatListSkeleton from "./chat-list-skeleton";
 
 export const ChatList = () => {
   const navigate = useNavigate();
-  
+
   const {
     fetchChats,
     fetchMoreChats,
@@ -146,13 +146,16 @@ export const ChatList = () => {
     <div
       className="
         fixed 
-        inset-y-0 
+        top-0
+        bottom-16
+        md:bottom-0
         left-0
         md:left-16 
         lg:left-60
-        w-full
-        max-w-full 
-        lg:max-w-95.75
+        right-0
+        w-auto
+        lg:right-auto
+        lg:w-95.75
         border-r 
         border-border/30
         bg-background

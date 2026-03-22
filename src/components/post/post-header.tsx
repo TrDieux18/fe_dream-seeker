@@ -33,7 +33,11 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
 
   return (
     <div className="flex items-start justify-between gap-4 px-5 pt-5 pb-3">
-      <div className="flex min-w-0 items-center gap-3 group cursor-pointer">
+      <button
+        type="button"
+        onClick={() => navigate(`/profile/${post.user?._id}`)}
+        className="flex min-w-0 flex-1 items-center gap-3 text-left group cursor-pointer"
+      >
         <AvatarWithBadge
           imageUrl={post.user.avatar || ""}
           altText={post.user.username}
@@ -41,10 +45,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
         />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 min-w-0">
-            <span
-              className="truncate font-semibold text-[15px] group-hover:underline"
-              onClick={() => navigate(`/profile/${post.user?._id}`)}
-            >
+            <span className="truncate font-semibold text-[15px] group-hover:underline">
               {post.user.username}
             </span>
             <MetaPill className="px-2 py-0.5 text-[11px]" variant="subtle">
@@ -62,7 +63,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDelete }) => {
             )}
           </div>
         </div>
-      </div>
+      </button>
 
       <div className="flex items-center gap-2 pt-0.5">
         {isOwner && (

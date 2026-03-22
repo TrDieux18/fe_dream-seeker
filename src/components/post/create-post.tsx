@@ -204,8 +204,8 @@ const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Card className="w-full max-w-150 mx-auto mb-8 overflow-hidden border-border/40 shadow-sm">
-      <div className="p-6">
+    <Card className="mx-auto mb-8 w-full max-w-150 overflow-hidden border-border/40 shadow-sm">
+      <div className="p-4 sm:p-5 md:p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -388,7 +388,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
 
             {/* Action Buttons */}
             <Separator />
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse items-stretch gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
               <Button
                 type="button"
                 variant="outline"
@@ -397,13 +397,14 @@ const CreatePost: React.FC<CreatePostProps> = ({ onSuccess }) => {
                   setImages([]);
                 }}
                 disabled={isCreatingPost}
+                className="w-full sm:w-auto"
               >
                 Clear All
               </Button>
               <Button
                 type="submit"
                 disabled={isCreatingPost}
-                className="min-w-30"
+                className="w-full sm:min-w-30 sm:w-auto"
               >
                 {isCreatingPost ? (
                   <>

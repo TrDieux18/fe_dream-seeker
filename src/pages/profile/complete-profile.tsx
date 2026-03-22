@@ -36,13 +36,11 @@ const CompleteProfile = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-   
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file");
       return;
     }
 
-    
     if (file.size > 5 * 1024 * 1024) {
       alert("Image size must be less than 5MB");
       return;
@@ -91,8 +89,8 @@ const CompleteProfile = () => {
 
   return (
     <>
-      <div className="max-h-screen flex items-center justify-center mt-10">
-        <div className="sm:max-w-125 border border-border rounded-lg p-8 w-full mx-4">
+      <div className="flex min-h-svh items-start justify-center px-4 py-6 sm:items-center sm:py-10">
+        <div className="w-full sm:max-w-125 rounded-lg border border-border p-4 sm:p-6 md:p-8">
           <div className="flex flex-col">
             <span className="text-2xl font-semibold">Complete Profile</span>
             <span className="text-sm text-muted-foreground">
@@ -170,10 +168,11 @@ const CompleteProfile = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button
               onClick={handleSave}
               disabled={!isFormChanged || !name.trim() || isUpdating}
+              className="w-full sm:w-auto"
             >
               {isUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Save Changes
@@ -182,6 +181,7 @@ const CompleteProfile = () => {
               variant="outline"
               onClick={() => navigate("/feed")}
               disabled={isUpdating}
+              className="w-full sm:w-auto"
             >
               Skip for now <ChevronRight className="w-4 h-4 animate-pulse" />
             </Button>

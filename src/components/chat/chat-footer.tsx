@@ -108,9 +108,9 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
 
   return (
     <>
-      <div className="sticky bottom-0 inset-x-0 z-50 border-t border-border/30 py-3 bg-background/95 backdrop-blur-sm">
+      <div className="sticky bottom-0 inset-x-0 z-50 border-t border-border/30 bg-background/95 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm">
         {image && (
-          <div className="max-w-4xl mx-auto px-6 mb-3">
+          <div className="mx-auto mb-3 max-w-4xl px-3 sm:px-4 md:px-6">
             <div className="w-fit relative">
               <img
                 src={image}
@@ -132,7 +132,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="max-w-4xl px-6 mx-auto"
+            className="mx-auto max-w-4xl px-3 sm:px-4 md:px-6"
           >
             <div className="flex items-end gap-2">
               <div className="flex-1 relative ">

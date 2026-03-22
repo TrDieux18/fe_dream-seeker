@@ -85,8 +85,8 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
 
   return (
     <div className="flex-1 overflow-hidden bg-background">
-      <div className="h-auto max-h-screen overflow-y-auto">
-        <div className="w-full max-w-6xl mx-auto h-full flex flex-col px-1 pt-20 pb-3">
+      <div className="h-full overflow-y-auto overscroll-contain">
+        <div className="mx-auto flex h-full w-full max-w-6xl flex-col px-1 pt-3 pb-24 sm:pb-28">
           {messages.map((message, index) => {
             const previousMessage = index > 0 ? messages[index - 1] : null;
             const showTimestamp = shouldShowTimestamp(message, previousMessage);
@@ -111,8 +111,6 @@ const ChatBody: React.FC<ChatBodyProps> = ({ chatId, messages, onReply }) => {
             );
           })}
         </div>
-        <br />
-        <br />
         <div ref={bottomRef} />
       </div>
     </div>

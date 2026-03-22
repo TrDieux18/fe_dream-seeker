@@ -38,7 +38,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2} />
           </Button>
-          <div className="flex gap-3 items-center group">
+          <div className="flex min-w-0 gap-3 items-center group">
             <AvatarWithBadge
               name={name}
               src={avatar}
@@ -47,14 +47,14 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
               size="w-10 h-10"
               className=""
             />
-            <div>
+            <div className="min-w-0">
               <h5
-                className="font-semibold text-[15px] cursor-pointer hover:underline"
+                className="truncate font-semibold text-[15px] cursor-pointer hover:underline"
                 onClick={() => navigate(`/profile/${id}`)}
               >
                 {name}
               </h5>
-              <p className="text-[13px] text-muted-foreground">
+              <p className="truncate text-[13px] text-muted-foreground">
                 {isOnline && !isGroup ? "Active now" : subheading}
               </p>
             </div>
@@ -65,14 +65,14 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat, currentUserId }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-9 w-9 hover:bg-muted/60"
+            className="hidden sm:inline-flex rounded-full h-9 w-9 hover:bg-muted/60"
           >
             <Phone className="h-5 w-5" strokeWidth={1.5} />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-9 w-9 hover:bg-muted/60"
+            className="hidden sm:inline-flex rounded-full h-9 w-9 hover:bg-muted/60"
           >
             <Video className="h-5 w-5" strokeWidth={1.5} />
           </Button>

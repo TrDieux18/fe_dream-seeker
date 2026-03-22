@@ -5,7 +5,7 @@ import SuggestionsPanel from "@/components/suggestions-panel";
 const FeedPage = () => {
   return (
     <FeedLayout rightSidebar={<SuggestionsPanel />}>
-      <div className="py-6 px-4">
+      <div className="px-3 py-5 sm:px-4 sm:py-6">
         <PostList />
       </div>
     </FeedLayout>

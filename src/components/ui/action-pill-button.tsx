@@ -21,6 +21,7 @@ const ActionPillButton: React.FC<ActionPillButtonProps> = ({
 }) => {
   return (
     <Button
+      type="button"
       variant="ghost"
       size={label ? "sm" : "icon"}
       className={cn(

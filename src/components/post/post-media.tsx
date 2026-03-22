@@ -41,7 +41,7 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
 
   return (
     <div
-      className="relative mx-5 overflow-hidden rounded-[28px] border border-border/50 bg-black/95 shadow-[0_28px_60px_-40px_rgba(0,0,0,0.55)]"
+      className="relative mx-3 overflow-hidden rounded-3xl border border-border/50 bg-black/95 shadow-[0_28px_60px_-40px_rgba(0,0,0,0.55)] sm:mx-5 sm:rounded-[28px]"
       style={{ aspectRatio: aspectRatio.toString() }}
     >
       {/* Main Image */}
@@ -79,7 +79,9 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
           {images.map((_, index) => (
             <button
+              type="button"
               key={index}
+              aria-label={`Go to image ${index + 1}`}
               className={`h-1.5 rounded-full transition-all ${
                 index === currentIndex
                   ? "w-6 bg-white"
@@ -99,7 +101,9 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
         <>
           {currentIndex > 0 && (
             <button
-              className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
+              type="button"
+              aria-label="Previous image"
+              className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -111,7 +115,9 @@ const PostMedia: React.FC<PostMediaProps> = ({ images, onDoubleTap }) => {
 
           {currentIndex < images.length - 1 && (
             <button
-              className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
+              type="button"
+              aria-label="Next image"
+              className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentIndex((prev) =>

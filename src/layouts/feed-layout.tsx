@@ -12,20 +12,22 @@ const FeedLayout: React.FC<FeedLayoutProps> = ({
   showRightSidebar = true,
 }) => {
   return (
-    <div className="flex justify-center min-h-screen bg-background">
+    <div className="mx-auto flex min-h-screen w-full max-w-400 justify-center bg-background px-0 sm:px-4 lg:px-6">
       {/* Main Feed Column */}
       <div
         className={`flex-1 ${
           showRightSidebar ? "max-w-157.5" : "max-w-233.75"
-        } w-full`}
+        } w-full min-w-0`}
       >
         {children}
       </div>
 
       {/* Right Sidebar - Hidden on mobile/tablet */}
       {showRightSidebar && rightSidebar && (
-        <div className="hidden xl:block w-79.75 shrink-0">
-          <div className="fixed w-79.75 pt-8 pr-16">{rightSidebar}</div>
+        <div className="hidden xl:block w-79.75 shrink-0 pl-6">
+          <div className="sticky top-0 h-screen w-79.75 overflow-y-auto pt-8 pr-2">
+            {rightSidebar}
+          </div>
         </div>
       )}
     </div>

@@ -1,22 +1,22 @@
 # Real-time Message Client
 
-Frontend cho ung dung chat + social feed thoi gian thuc.
+Frontend for a real-time chat and social feed application.
 
-## Link deploy
+## Deployment Link
 
-- Production : https://fe-dream-seeker-gehw.vercel.app
+- Production: https://fe-dream-seeker-gehw.vercel.app
 
-## Tong quan
+## Overview
 
-Client duoc xay dung de:
+The client is built to support:
 
-- Dang ky/dang nhap, quan ly phien dang nhap.
-- Chat 1-1 va group chat theo thoi gian thuc.
-- Gui tin nhan text/anh, reply, edit, delete.
-- Quan ly bai viet, comment, follow va notification.
-- Hien thi trang thai online/offline theo socket.
+- Register/login and session management.
+- 1-1 chat and group chat in real time.
+- Send text/image messages, reply, edit, and delete.
+- Manage posts, comments, follows, and notifications.
+- Display online/offline status via socket.
 
-## Cong nghe su dung
+## Tech Stack
 
 - React + TypeScript
 - Vite
@@ -28,48 +28,48 @@ Client duoc xay dung de:
 - React Hook Form + Zod
 - Sonner, date-fns, lucide-react
 
-## Cau truc thu muc
+## Folder Structure
 
 ```text
 src/
-	components/   # component dung chung va component theo module chat/post/profile
-	hooks/        # custom hooks (auth, chat, follow, notification...)
-	pages/        # route pages
-	routes/       # dinh nghia route
-	layouts/      # layout cho app
-	providers/    # context/provider
-	lib/          # axios client, helper
-	types/        # dinh nghia type
-	assets/       # static files
+  components/   # shared and feature components (chat/post/profile)
+  hooks/        # custom hooks (auth, chat, follow, notification...)
+  pages/        # route pages
+  routes/       # route definitions
+  layouts/      # app layouts
+  providers/    # context/providers
+  lib/          # axios client and helpers
+  types/        # TypeScript types
+  assets/       # static files
 ```
 
-## Cai dat va chay local
+## Setup and Run Locally
 
-1. Cai dependency
+1. Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Tao file .env trong thu muc client
+2. Create a `.env` file in the client folder
 
 ```env
 VITE_API_URL=http://localhost:3001
 ```
 
-3. Chay development
+3. Run in development mode
 
 ```bash
 npm run dev
 ```
 
-4. Build production
+4. Build for production
 
 ```bash
 npm run build
 ```
 
-5. Preview ban build
+5. Preview production build
 
 ```bash
 npm run preview
@@ -77,28 +77,28 @@ npm run preview
 
 ## Scripts
 
-- npm run dev: chay vite dev server
-- npm run build: type-check + build production
-- npm run preview: chay thu ban build local
-- npm run lint: lint code
+- npm run dev: run Vite dev server
+- npm run build: type-check and build production
+- npm run preview: preview local production build
+- npm run lint: lint source code
 
-## Cac tinh nang chinh
+## Key Features
 
-- Realtime messaging voi socket
-- Group chat settings (doi ten, doi anh, clear/delete chat)
+- Real-time messaging with socket
+- Group chat settings (rename, change image, clear/delete chat)
 - Message actions (reply, edit, delete)
-- Toast thong bao va loading/error state
-- UI responsive cho mobile/desktop
+- Toast notifications with loading/error states
+- Responsive UI for mobile and desktop
 - Theme support
 
-## Luu y ket noi backend
+## Backend Connection Notes
 
-- Client goi API theo baseURL: ${VITE_API_URL}/api
-- Axios dang bat withCredentials, backend can cau hinh CORS cho domain frontend.
-- Khi deploy, dat VITE_API_URL ve URL backend production.
+- Client calls API with base URL: `${VITE_API_URL}/api`
+- Axios uses `withCredentials`, so backend CORS must allow the frontend domain.
+- In deployment, set `VITE_API_URL` to your production backend URL.
 
-## Ghi chu
+## Note
 
-Neu ban truy cap production frontend, co the dung truc tiep link:
+You can access the production frontend directly at:
 
 https://fe-dream-seeker-gehw.vercel.app/feed
